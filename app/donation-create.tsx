@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text } from "react-native";
 
 import { router } from "expo-router";
 
@@ -11,14 +11,27 @@ export default function DonationCreateScreen() {
     amount: number,
     category: string,
     note: string,
+    latitude?: number,
+    longitude?: number,
   ) => {
-    await donationService.create({
-      amount,
-      category,
-      note,
-    });
+    try {
+      await donationService.create({
+        amount,
+        category,
+        note,
+        latitude,
+        longitude,
+      });
 
-    router.replace("/donations");
+      Alert.alert("Berhasil", "Donasi berhasil ditambahkan.");
+
+      router.replace("/donations");
+    } catch (error: any) {
+      Alert.alert(
+        "Gagal",
+        error.message || "Terjadi kesalahan saat menyimpan donasi.",
+      );
+    }
   };
 
   return (
