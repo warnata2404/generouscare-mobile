@@ -4,24 +4,24 @@ import { router } from "expo-router";
 
 import { formatRupiah } from "@/lib/currency";
 
-interface DonationCardProps {
+interface ExpenseCardProps {
   id: string;
-  amount: number;
   category: string;
-  note: string;
+  amount: number;
+  description: string | null;
   createdAt: string;
 }
 
-export default function DonationCard({
+export default function ExpenseCard({
   id,
-  amount,
   category,
-  note,
+  amount,
+  description,
   createdAt,
-}: DonationCardProps) {
+}: ExpenseCardProps) {
   const handlePress = () => {
     router.push({
-      pathname: "/donation-detail",
+      pathname: "/expense-detail",
       params: {
         id,
       },
@@ -38,7 +38,7 @@ export default function DonationCard({
 
       <Text style={styles.category}>{category}</Text>
 
-      <Text style={styles.note}>{note || "-"}</Text>
+      <Text style={styles.description}>{description || "-"}</Text>
 
       <Text style={styles.date}>
         {new Date(createdAt).toLocaleDateString("id-ID")}
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   amount: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#16A34A",
+    color: "#DC2626",
   },
 
   category: {
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     color: "#0F172A",
   },
 
-  note: {
+  description: {
     marginTop: 4,
     color: "#64748B",
   },

@@ -92,6 +92,13 @@ export default function DashboardScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity
+        style={styles.expenseButton}
+        onPress={() => router.push("/expenses")}
+      >
+        <Text style={styles.buttonText}>Kelola Pengeluaran</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
         style={styles.donationButton}
         onPress={() => router.push("/donations")}
       >
@@ -155,6 +162,13 @@ const styles = StyleSheet.create({
 
   notificationButton: {
     backgroundColor: "#2563EB",
+    padding: 16,
+    borderRadius: 16,
+    marginTop: 12,
+  },
+
+  expenseButton: {
+    backgroundColor: "#DC2626",
     padding: 16,
     borderRadius: 16,
     marginTop: 12,

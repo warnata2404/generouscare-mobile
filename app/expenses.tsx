@@ -11,12 +11,12 @@ import { useState } from "react";
 
 import { router } from "expo-router";
 
-import DonationCard from "@/components/donations/DonationCard";
+import ExpenseCard from "@/components/expenses/ExpenseCard";
 
-import { useDonations } from "@/features/donations/useDonations";
+import { useExpenses } from "@/features/expenses/useExpenses";
 
-export default function DonationsScreen() {
-  const { donations, loading, refresh } = useDonations();
+export default function ExpensesScreen() {
+  const { expenses, loading, refresh } = useExpenses();
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -40,42 +40,42 @@ export default function DonationsScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Daftar Donasi</Text>
+      <Text style={styles.header}>Daftar Pengeluaran</Text>
 
       <Text style={styles.subtitle}>
-        Seluruh donasi yang tercatat pada sistem.
+        Seluruh pengeluaran yang tercatat pada sistem.
       </Text>
 
       <TouchableOpacity
         style={styles.createButton}
-        onPress={() => router.push("/donation-create")}
+        onPress={() => router.push("/expense-create")}
       >
-        <Text style={styles.createButtonText}>Tambah Donasi</Text>
+        <Text style={styles.createButtonText}>Tambah Pengeluaran</Text>
       </TouchableOpacity>
 
-      {donations.length > 0 ? (
+      {expenses.length > 0 ? (
         <FlatList
-          data={donations}
+          data={expenses}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <DonationCard
+            <ExpenseCard
               id={item.id}
-              amount={item.amount}
               category={item.category}
-              note={item.note}
+              amount={item.amount}
+              description={item.description}
               createdAt={item.created_at}
             />
           )}
-          showsVerticalScrollIndicator={false}
           refreshing={refreshing}
           onRefresh={handleRefresh}
+          showsVerticalScrollIndicator={false}
         />
       ) : (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyTitle}>Belum Ada Donasi</Text>
+          <Text style={styles.emptyTitle}>Belum Ada Pengeluaran</Text>
 
           <Text style={styles.emptyText}>
-            Tambahkan data donasi pertama Anda.
+            Tambahkan data pengeluaran pertama.
           </Text>
         </View>
       )}
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
 
   createButton: {
-    backgroundColor: "#22C55E",
+    backgroundColor: "#DC2626",
     padding: 14,
     borderRadius: 16,
     marginBottom: 16,

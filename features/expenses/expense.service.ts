@@ -1,8 +1,51 @@
 import { supabase } from "@/lib/supabase";
 
-import { ExpenseCategory } from "./types";
+import { CreateExpensePayload, Expense, ExpenseCategory } from "./types";
 
 export const expenseService = {
+  async getAll(): Promise<Expense[]> {
+    const { data, error } = await supabase
+      .from("expenses")
+      .select("*")
+      .order("created_at", {
+        ascending: false,
+      });
+
+    if (error) {
+      throw error;
+    }
+
+    return data ?? [];
+  },
+
+  async getById(id: string): Promise<Expense | null> {
+    const { data, error } = await supabase
+      .from("expenses")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  },
+
+  async create(payload: CreateExpensePayload) {
+    const { error } = await supabase.from("expenses").insert({
+      category: payload.category,
+
+      amount: payload.amount,
+
+      description: payload.description,
+    });
+
+    if (error) {
+      throw error;
+    }
+  },
+
   async getCategoryStatistics(): Promise<ExpenseCategory[]> {
     const { data } = await supabase.from("expenses").select("category, amount");
 
@@ -29,8 +72,10 @@ export const expenseService = {
 
     return Object.entries(grouped).map(([category, amount]) => ({
       category,
+
       amount,
-      percentage: Math.round((amount / total) * 100),
+
+      percentage: total > 0 ? Math.round((amount / total) * 100) : 0,
     }));
   },
 };
