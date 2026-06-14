@@ -104,6 +104,13 @@ export default function DashboardScreen() {
       >
         <Text style={styles.buttonText}>Kelola Donasi</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.profileButton}
+        onPress={() => router.push("/profile")}
+      >
+        <Text style={styles.buttonText}>Profil Saya</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -176,6 +183,13 @@ const styles = StyleSheet.create({
 
   donationButton: {
     backgroundColor: "#7C3AED",
+    padding: 16,
+    borderRadius: 16,
+    marginTop: 12,
+  },
+
+  profileButton: {
+    backgroundColor: "#0891B2",
     padding: 16,
     borderRadius: 16,
     marginTop: 12,
