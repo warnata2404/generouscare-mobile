@@ -3,10 +3,12 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 import { expenseService } from "./expense.service";
+
 import { Expense } from "./types";
 
 export function useExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
+
   const [loading, setLoading] = useState(true);
 
   const loadExpenses = useCallback(async () => {

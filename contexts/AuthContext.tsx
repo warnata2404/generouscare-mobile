@@ -55,7 +55,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUser(null);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Initialize Auth Error:", error);
+
       setUser(null);
     } finally {
       setLoading(false);
@@ -75,6 +76,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
           full_name: result.user.user_metadata?.full_name ?? "",
         });
       }
+    } catch (error) {
+      console.error("Login Error:", error);
+
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -85,15 +90,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       await authService.register(payload);
+    } catch (error) {
+      console.error("Register Error:", error);
+
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
   const logout = async () => {
-    await authService.logout();
+    try {
+      await authService.logout();
 
-    setUser(null);
+      setUser(null);
+    } catch (error) {
+      console.error("Logout Error:", error);
+
+      throw error;
+    }
   };
 
   const refreshProfile = async () => {

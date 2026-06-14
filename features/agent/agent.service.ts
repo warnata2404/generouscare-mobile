@@ -95,8 +95,6 @@ export const agentService = {
 
     if (error) {
       console.log("Agent Notification Error:", error);
-    } else {
-      console.log("Agent Notification Created:", title);
     }
   },
 };

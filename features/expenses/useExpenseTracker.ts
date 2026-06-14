@@ -24,24 +24,22 @@ export function useExpenseTracker() {
   useEffect(() => {
     loadData();
 
-    const channel = supabase.channel("expense-tracker");
+    const channel = supabase.channel(`expense-tracker-${Date.now()}`).on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "expenses",
+      },
+      () => {
+        loadData();
+      },
+    );
 
-    channel
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "expenses",
-        },
-        () => {
-          loadData();
-        },
-      )
-      .subscribe();
+    channel.subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      channel.unsubscribe();
     };
   }, [loadData]);
 

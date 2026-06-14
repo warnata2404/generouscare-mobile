@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 import { notificationService } from "./notification.service";
-
 import { NotificationItem } from "./types";
 
 export function useNotifications() {
@@ -24,29 +23,28 @@ export function useNotifications() {
   useEffect(() => {
     loadNotifications();
 
-    const channel = supabase.channel("notifications-realtime");
+    const channel = supabase.channel(`notifications-${Date.now()}`).on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "notifications",
+      },
+      () => {
+        loadNotifications();
+      },
+    );
 
-    channel
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "notifications",
-        },
-        () => {
-          loadNotifications();
-        },
-      )
-      .subscribe();
+    channel.subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      channel.unsubscribe();
     };
   }, [loadNotifications]);
 
   return {
     notifications,
     loading,
+    refresh: loadNotifications,
   };
 }

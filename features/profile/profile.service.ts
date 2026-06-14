@@ -34,7 +34,6 @@ export const profileService = {
       .from("profiles")
       .update({
         full_name: payload.full_name,
-
         avatar_url: payload.avatar_url,
       })
       .eq("id", authData.user.id);
@@ -45,6 +44,10 @@ export const profileService = {
   },
 
   async logout() {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      throw error;
+    }
   },
 };
