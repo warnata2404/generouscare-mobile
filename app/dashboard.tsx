@@ -12,6 +12,8 @@ import StatCard from "@/components/dashboard/StatCard";
 
 import { useDashboard } from "@/features/dashboard/useDashboard";
 
+import { formatRupiah } from "@/lib/currency";
+
 export default function DashboardScreen() {
   const { stats, recommendation, activities, loading } = useDashboard();
 
@@ -24,17 +26,27 @@ export default function DashboardScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.header}>Dashboard</Text>
 
-      <StatCard title="Total Donasi" value={`Rp ${stats?.totalDonations}`} />
+      <Text style={styles.subtitle}>
+        Ringkasan kondisi dana dan aktivitas sosial terbaru.
+      </Text>
+
+      <StatCard
+        title="Total Donasi"
+        value={formatRupiah(stats?.totalDonations ?? 0)}
+      />
 
       <StatCard
         title="Total Pengeluaran"
-        value={`Rp ${stats?.totalExpenses}`}
+        value={formatRupiah(stats?.totalExpenses ?? 0)}
       />
 
-      <StatCard title="Dana Tersisa" value={`Rp ${stats?.remainingFunds}`} />
+      <StatCard
+        title="Dana Tersisa"
+        value={formatRupiah(stats?.remainingFunds ?? 0)}
+      />
 
       {recommendation && (
         <AgentCard
@@ -45,13 +57,19 @@ export default function DashboardScreen() {
 
       <Text style={styles.section}>Aktivitas Terbaru</Text>
 
-      {activities.map((activity) => (
-        <ActivityCard
-          key={activity.id}
-          title={activity.title}
-          createdAt={activity.createdAt}
-        />
-      ))}
+      {activities.length > 0 ? (
+        activities.map((activity) => (
+          <ActivityCard
+            key={activity.id}
+            title={activity.title}
+            createdAt={activity.createdAt}
+          />
+        ))
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Belum ada aktivitas.</Text>
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -72,13 +90,32 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: "700",
+    color: "#0F172A",
+    marginBottom: 4,
+  },
+
+  subtitle: {
+    fontSize: 14,
+    color: "#64748B",
     marginBottom: 20,
   },
 
   section: {
     marginTop: 20,
     marginBottom: 12,
-    fontWeight: "700",
     fontSize: 18,
+    fontWeight: "700",
+    color: "#0F172A",
+  },
+
+  emptyContainer: {
+    backgroundColor: "#FFFFFF",
+    padding: 20,
+    borderRadius: 16,
+    alignItems: "center",
+  },
+
+  emptyText: {
+    color: "#64748B",
   },
 });
