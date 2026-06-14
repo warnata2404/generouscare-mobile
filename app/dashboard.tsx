@@ -15,9 +15,11 @@ import StatCard from "@/components/dashboard/StatCard";
 
 import { useDashboard } from "@/features/dashboard/useDashboard";
 
+import { useAgent } from "@/features/agent/useAgent";
 import { formatRupiah } from "@/lib/currency";
 
 export default function DashboardScreen() {
+  useAgent();
   const { stats, recommendation, activities, loading } = useDashboard();
 
   if (loading) {
