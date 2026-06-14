@@ -1,22 +1,22 @@
 import { useEffect } from "react";
-import { Text, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
-import { supabase } from "../lib/supabase";
+import { router } from "expo-router";
 
-export default function HomeScreen() {
+import { useAuth } from "@/hooks/useAuth";
+
+export default function IndexScreen() {
+  const { user, loading } = useAuth();
+
   useEffect(() => {
-    checkConnection();
-  }, []);
+    if (loading) return;
 
-  const checkConnection = async () => {
-    const { data, error } = await supabase.auth.getSession();
-
-    console.log("SUPABASE SESSION:", data);
-
-    if (error) {
-      console.log(error);
+    if (user) {
+      router.replace("/dashboard");
+    } else {
+      router.replace("/login");
     }
-  };
+  }, [user, loading]);
 
   return (
     <View
@@ -26,7 +26,7 @@ export default function HomeScreen() {
         alignItems: "center",
       }}
     >
-      <Text>GenerousCare Ready</Text>
+      <ActivityIndicator size="large" />
     </View>
   );
 }
