@@ -35,9 +35,8 @@ export function useDashboard() {
   useEffect(() => {
     loadDashboard();
 
-    const channel = supabase.channel("dashboard-realtime");
-
-    channel
+    const channel = supabase
+      .channel(`dashboard-realtime-${Date.now()}`)
       .on(
         "postgres_changes",
         {
@@ -59,11 +58,12 @@ export function useDashboard() {
         () => {
           loadDashboard();
         },
-      )
-      .subscribe();
+      );
+
+    channel.subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      channel.unsubscribe();
     };
   }, [loadDashboard]);
 

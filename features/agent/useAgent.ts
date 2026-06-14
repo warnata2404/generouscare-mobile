@@ -8,9 +8,8 @@ export function useAgent() {
   useEffect(() => {
     agentService.evaluate();
 
-    const channel = supabase.channel("agent-monitor");
-
-    channel
+    const channel = supabase
+      .channel(`agent-monitor-${Date.now()}`)
       .on(
         "postgres_changes",
         {
@@ -32,11 +31,12 @@ export function useAgent() {
         () => {
           agentService.evaluate();
         },
-      )
-      .subscribe();
+      );
+
+    channel.subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      channel.unsubscribe();
     };
   }, []);
 }

@@ -19,12 +19,18 @@ export default function ProfileScreen() {
   const { profile, loading, refresh, updateProfile, logout } = useProfile();
 
   const handleUpdateProfile = async (fullName: string, avatarUrl: string) => {
-    await updateProfile({
-      full_name: fullName,
-      avatar_url: avatarUrl || null,
-    });
+    try {
+      await updateProfile({
+        full_name: fullName,
+        avatar_url: avatarUrl || null,
+      });
 
-    await refresh();
+      await refresh();
+
+      Alert.alert("Berhasil", "Profil berhasil diperbarui.");
+    } catch (error: any) {
+      Alert.alert("Gagal", error?.message || "Terjadi kesalahan.");
+    }
   };
 
   const handleLogout = () => {
@@ -37,9 +43,15 @@ export default function ProfileScreen() {
         text: "Logout",
         style: "destructive",
         onPress: async () => {
-          await logout();
+          try {
+            await logout();
 
-          router.replace("/");
+            router.dismissAll();
+
+            router.replace("/login");
+          } catch (error: any) {
+            Alert.alert("Gagal", error?.message || "Logout gagal dilakukan.");
+          }
         },
       },
     ]);

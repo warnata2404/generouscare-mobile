@@ -1,5 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 
+import { supabase } from "@/lib/supabase";
+
 import { authService } from "@/services/auth.service";
 
 import { AuthContextType, UserProfile } from "@/types/auth";
@@ -19,6 +21,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     initializeAuth();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email ?? "",
+          full_name: session.user.user_metadata?.full_name ?? "",
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const initializeAuth = async () => {
@@ -31,9 +51,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
           email: session.user.email ?? "",
           full_name: session.user.user_metadata?.full_name ?? "",
         });
+      } else {
+        setUser(null);
       }
     } catch (error) {
       console.error(error);
+      setUser(null);
     } finally {
       setLoading(false);
     }

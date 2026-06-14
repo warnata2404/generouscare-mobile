@@ -4,6 +4,12 @@ import { AGENT_RULES } from "./rules";
 
 export const agentService = {
   async evaluate() {
+    const { data: authData } = await supabase.auth.getUser();
+
+    if (!authData.user) {
+      return;
+    }
+
     const { data: donations } = await supabase
       .from("donations")
       .select("amount");
@@ -59,33 +65,31 @@ export const agentService = {
     const { data: userData } = await supabase.auth.getUser();
 
     if (!userData.user) {
-      console.log("Agent: User tidak ditemukan");
-
       return;
     }
 
-    const { data: existing } = await supabase
+    const { data: existing, error: existingError } = await supabase
       .from("notifications")
       .select("id")
       .eq("user_id", userData.user.id)
       .eq("title", title)
       .limit(1);
 
-    if (existing && existing.length > 0) {
-      console.log("Agent: Notifikasi sudah ada");
+    if (existingError) {
+      console.log("Agent Notification Check Error:", existingError);
 
+      return;
+    }
+
+    if (existing && existing.length > 0) {
       return;
     }
 
     const { error } = await supabase.from("notifications").insert({
       user_id: userData.user.id,
-
       title,
-
       message,
-
       type,
-
       is_read: false,
     });
 
