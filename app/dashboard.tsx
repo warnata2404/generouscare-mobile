@@ -13,6 +13,8 @@ import StatCard from "@/components/dashboard/StatCard";
 import { useDashboard } from "@/features/dashboard/useDashboard";
 
 import { formatRupiah } from "@/lib/currency";
+import { router } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 export default function DashboardScreen() {
   const { stats, recommendation, activities, loading } = useDashboard();
@@ -70,6 +72,26 @@ export default function DashboardScreen() {
           <Text style={styles.emptyText}>Belum ada aktivitas.</Text>
         </View>
       )}
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#22C55E",
+          padding: 16,
+          borderRadius: 16,
+          marginTop: 20,
+        }}
+        onPress={() => router.push("/tracker")}
+      >
+        <Text
+          style={{
+            color: "#FFFFFF",
+            textAlign: "center",
+            fontWeight: "700",
+          }}
+        >
+          Lihat Fund Tracker
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
