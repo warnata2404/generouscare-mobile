@@ -13,13 +13,14 @@ import ActivityCard from "@/components/dashboard/ActivityCard";
 import AgentCard from "@/components/dashboard/AgentCard";
 import StatCard from "@/components/dashboard/StatCard";
 
+import { useAgent } from "@/features/agent/useAgent";
 import { useDashboard } from "@/features/dashboard/useDashboard";
 
-import { useAgent } from "@/features/agent/useAgent";
 import { formatRupiah } from "@/lib/currency";
 
 export default function DashboardScreen() {
   useAgent();
+
   const { stats, recommendation, activities, loading } = useDashboard();
 
   if (loading) {
@@ -89,6 +90,13 @@ export default function DashboardScreen() {
       >
         <Text style={styles.buttonText}>Notification Center</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.donationButton}
+        onPress={() => router.push("/donations")}
+      >
+        <Text style={styles.buttonText}>Kelola Donasi</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -147,6 +155,13 @@ const styles = StyleSheet.create({
 
   notificationButton: {
     backgroundColor: "#2563EB",
+    padding: 16,
+    borderRadius: 16,
+    marginTop: 12,
+  },
+
+  donationButton: {
+    backgroundColor: "#7C3AED",
     padding: 16,
     borderRadius: 16,
     marginTop: 12,
