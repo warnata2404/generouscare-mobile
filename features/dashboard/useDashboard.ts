@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+import { supabase } from "@/lib/supabase";
 
 import { dashboardService } from "./dashboard.service";
 
@@ -14,11 +16,7 @@ export function useDashboard() {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadDashboard();
-  }, []);
-
-  const loadDashboard = async () => {
+  const loadDashboard = useCallback(async () => {
     try {
       const statsData = await dashboardService.getStats();
 
@@ -32,7 +30,42 @@ export function useDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadDashboard();
+
+    const channel = supabase.channel("dashboard-realtime");
+
+    channel
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "donations",
+        },
+        () => {
+          loadDashboard();
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "expenses",
+        },
+        () => {
+          loadDashboard();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadDashboard]);
 
   return {
     stats,
