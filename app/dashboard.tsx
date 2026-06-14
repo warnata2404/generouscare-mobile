@@ -3,8 +3,11 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
+
+import { router } from "expo-router";
 
 import ActivityCard from "@/components/dashboard/ActivityCard";
 import AgentCard from "@/components/dashboard/AgentCard";
@@ -13,8 +16,6 @@ import StatCard from "@/components/dashboard/StatCard";
 import { useDashboard } from "@/features/dashboard/useDashboard";
 
 import { formatRupiah } from "@/lib/currency";
-import { router } from "expo-router";
-import { TouchableOpacity } from "react-native";
 
 export default function DashboardScreen() {
   const { stats, recommendation, activities, loading } = useDashboard();
@@ -74,23 +75,17 @@ export default function DashboardScreen() {
       )}
 
       <TouchableOpacity
-        style={{
-          backgroundColor: "#22C55E",
-          padding: 16,
-          borderRadius: 16,
-          marginTop: 20,
-        }}
+        style={styles.trackerButton}
         onPress={() => router.push("/tracker")}
       >
-        <Text
-          style={{
-            color: "#FFFFFF",
-            textAlign: "center",
-            fontWeight: "700",
-          }}
-        >
-          Lihat Fund Tracker
-        </Text>
+        <Text style={styles.buttonText}>Lihat Fund Tracker</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.notificationButton}
+        onPress={() => router.push("/notifications")}
+      >
+        <Text style={styles.buttonText}>Notification Center</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -139,5 +134,27 @@ const styles = StyleSheet.create({
 
   emptyText: {
     color: "#64748B",
+  },
+
+  trackerButton: {
+    backgroundColor: "#22C55E",
+    padding: 16,
+    borderRadius: 16,
+    marginTop: 20,
+  },
+
+  notificationButton: {
+    backgroundColor: "#2563EB",
+    padding: 16,
+    borderRadius: 16,
+    marginTop: 12,
+    marginBottom: 24,
+  },
+
+  buttonText: {
+    color: "#FFFFFF",
+    textAlign: "center",
+    fontWeight: "700",
+    fontSize: 16,
   },
 });
