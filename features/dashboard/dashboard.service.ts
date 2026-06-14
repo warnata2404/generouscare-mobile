@@ -52,20 +52,41 @@ export const dashboardService = {
   },
 
   async getActivities(): Promise<ActivityItem[]> {
-    const { data } = await supabase
-      .from("expenses")
-      .select("id, description, created_at")
-      .order("created_at", {
-        ascending: false,
-      })
-      .limit(5);
+    const { data: donations } = await supabase
+      .from("donations")
+      .select("id, amount, category, created_at");
 
-    return (
-      data?.map((item) => ({
-        id: item.id,
-        title: item.description,
-        createdAt: new Date(item.created_at).toLocaleDateString("id-ID"),
-      })) ?? []
-    );
+    const { data: expenses } = await supabase
+      .from("expenses")
+      .select("id, amount, category, created_at");
+
+    const donationActivities =
+      donations?.map((item) => ({
+        id: `donation-${item.id}`,
+        title: `Donasi ${item.category} - Rp ${Number(
+          item.amount,
+        ).toLocaleString("id-ID")}`,
+        createdAt: item.created_at,
+      })) ?? [];
+
+    const expenseActivities =
+      expenses?.map((item) => ({
+        id: `expense-${item.id}`,
+        title: `Pengeluaran ${item.category} - Rp ${Number(
+          item.amount,
+        ).toLocaleString("id-ID")}`,
+        createdAt: item.created_at,
+      })) ?? [];
+
+    return [...donationActivities, ...expenseActivities]
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
+      .slice(0, 5)
+      .map((item) => ({
+        ...item,
+        createdAt: new Date(item.createdAt).toLocaleDateString("id-ID"),
+      }));
   },
 };
