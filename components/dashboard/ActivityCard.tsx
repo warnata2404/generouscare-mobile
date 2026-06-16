@@ -26,6 +26,17 @@ export default function ActivityCard({ title, createdAt }: ActivityCardProps) {
       </View>
 
       <View style={styles.content}>
+        <View
+          style={[
+            styles.badge,
+            isDonation ? styles.badgeDonation : styles.badgeExpense,
+          ]}
+        >
+          <Text style={styles.badgeText}>
+            {isDonation ? "DONASI" : "PENGELUARAN"}
+          </Text>
+        </View>
+
         <Text style={styles.title}>{title}</Text>
 
         <Text style={styles.date}>{createdAt}</Text>
@@ -81,6 +92,34 @@ const styles = StyleSheet.create({
     flex: 1,
 
     marginLeft: 12,
+  },
+
+  badge: {
+    alignSelf: "flex-start",
+
+    paddingHorizontal: 10,
+
+    paddingVertical: 4,
+
+    borderRadius: 999,
+
+    marginBottom: 8,
+  },
+
+  badgeDonation: {
+    backgroundColor: "#DCFCE7",
+  },
+
+  badgeExpense: {
+    backgroundColor: "#FEE2E2",
+  },
+
+  badgeText: {
+    fontSize: 10,
+
+    fontWeight: "700",
+
+    color: "#0F172A",
   },
 
   title: {

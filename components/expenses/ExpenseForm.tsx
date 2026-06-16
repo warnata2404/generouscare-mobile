@@ -10,7 +10,19 @@ import {
   View,
 } from "react-native";
 
+import { Picker } from "@react-native-picker/picker";
+
+import { CATEGORIES } from "@/features/shared/categories";
+
 interface ExpenseFormProps {
+  initialAmount?: string;
+
+  initialCategory?: string;
+
+  initialDescription?: string;
+
+  submitLabel?: string;
+
   onSubmit: (
     amount: number,
     category: string,
@@ -18,12 +30,18 @@ interface ExpenseFormProps {
   ) => Promise<void>;
 }
 
-export default function ExpenseForm({ onSubmit }: ExpenseFormProps) {
-  const [amount, setAmount] = useState("");
+export default function ExpenseForm({
+  initialAmount = "",
+  initialCategory = "",
+  initialDescription = "",
+  submitLabel = "Simpan Pengeluaran",
+  onSubmit,
+}: ExpenseFormProps) {
+  const [amount, setAmount] = useState(initialAmount);
 
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(initialCategory);
 
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(initialDescription);
 
   const [loading, setLoading] = useState(false);
 
@@ -61,12 +79,18 @@ export default function ExpenseForm({ onSubmit }: ExpenseFormProps) {
         onChangeText={setAmount}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Kategori"
-        value={category}
-        onChangeText={setCategory}
-      />
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={category}
+          onValueChange={(value) => setCategory(value)}
+        >
+          <Picker.Item label="Pilih Kategori" value="" />
+
+          {CATEGORIES.map((item) => (
+            <Picker.Item key={item} label={item} value={item} />
+          ))}
+        </Picker>
+      </View>
 
       <TextInput
         style={styles.input}
@@ -80,7 +104,7 @@ export default function ExpenseForm({ onSubmit }: ExpenseFormProps) {
         {loading ? (
           <ActivityIndicator color="#FFFFFF" />
         ) : (
-          <Text style={styles.buttonText}>Simpan Pengeluaran</Text>
+          <Text style={styles.buttonText}>{submitLabel}</Text>
         )}
       </TouchableOpacity>
     </View>
@@ -90,22 +114,45 @@ export default function ExpenseForm({ onSubmit }: ExpenseFormProps) {
 const styles = StyleSheet.create({
   input: {
     backgroundColor: "#FFFFFF",
+
     borderWidth: 1,
+
     borderColor: "#E2E8F0",
+
     borderRadius: 16,
+
     padding: 16,
+
     marginBottom: 12,
+  },
+
+  pickerContainer: {
+    backgroundColor: "#FFFFFF",
+
+    borderWidth: 1,
+
+    borderColor: "#E2E8F0",
+
+    borderRadius: 16,
+
+    marginBottom: 12,
+
+    overflow: "hidden",
   },
 
   button: {
     backgroundColor: "#DC2626",
+
     padding: 16,
+
     borderRadius: 16,
+
     alignItems: "center",
   },
 
   buttonText: {
     color: "#FFFFFF",
+
     fontWeight: "700",
   },
 });

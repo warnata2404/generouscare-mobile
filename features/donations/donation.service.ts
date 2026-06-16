@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import {
   CreateDonationPayload,
   Donation,
+  DonationCategoryStatistic,
   UpdateDonationPayload,
 } from "./types";
 
@@ -226,5 +227,48 @@ export const donationService = {
 
       throw error;
     }
+  },
+
+  async getCategoryStatistics(): Promise<DonationCategoryStatistic[]> {
+    const { data, error } = await supabase
+      .from("donations")
+      .select("category, amount");
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      return [];
+    }
+
+    const totalAmount = data.reduce(
+      (sum, item) => sum + Number(item.amount),
+      0,
+    );
+
+    const grouped = data.reduce(
+      (acc, item) => {
+        const category = item.category;
+
+        if (!acc[category]) {
+          acc[category] = 0;
+        }
+
+        acc[category] += Number(item.amount);
+
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    return Object.entries(grouped).map(([category, amount]) => ({
+      category,
+
+      amount,
+
+      percentage:
+        totalAmount > 0 ? Math.round((amount / totalAmount) * 100) : 0,
+    }));
   },
 };

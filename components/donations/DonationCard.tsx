@@ -1,6 +1,8 @@
-import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { router } from "expo-router";
+
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { formatRupiah } from "@/lib/currency";
 
@@ -51,11 +53,21 @@ export default function DonationCard({
         />
       ) : null}
 
+      <View style={styles.header}>
+        <View style={styles.iconContainer}>
+          <MaterialCommunityIcons name="hand-heart" size={20} color="#FFFFFF" />
+        </View>
+
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{category}</Text>
+        </View>
+      </View>
+
       <Text style={styles.amount}>{formatRupiah(amount)}</Text>
 
-      <Text style={styles.category}>{category}</Text>
-
-      <Text style={styles.note}>{note || "-"}</Text>
+      <Text style={styles.note} numberOfLines={2}>
+        {note || "-"}
+      </Text>
 
       <Text style={styles.date}>
         {new Date(createdAt).toLocaleDateString("id-ID")}
@@ -70,7 +82,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
 
-    borderRadius: 16,
+    borderRadius: 18,
 
     padding: 16,
 
@@ -78,11 +90,11 @@ const styles = StyleSheet.create({
 
     shadowColor: "#000",
 
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.06,
 
-    shadowRadius: 4,
+    shadowRadius: 8,
 
-    elevation: 2,
+    elevation: 3,
   },
 
   image: {
@@ -90,38 +102,76 @@ const styles = StyleSheet.create({
 
     height: 180,
 
-    borderRadius: 12,
+    borderRadius: 14,
 
-    marginBottom: 12,
+    marginBottom: 14,
 
     backgroundColor: "#F1F5F9",
   },
 
+  header: {
+    flexDirection: "row",
+
+    alignItems: "center",
+
+    justifyContent: "space-between",
+
+    marginBottom: 12,
+  },
+
+  iconContainer: {
+    width: 42,
+
+    height: 42,
+
+    borderRadius: 21,
+
+    backgroundColor: "#16A34A",
+
+    justifyContent: "center",
+
+    alignItems: "center",
+  },
+
+  badge: {
+    backgroundColor: "#DCFCE7",
+
+    paddingHorizontal: 12,
+
+    paddingVertical: 6,
+
+    borderRadius: 999,
+  },
+
+  badgeText: {
+    color: "#15803D",
+
+    fontSize: 12,
+
+    fontWeight: "700",
+  },
+
   amount: {
-    fontSize: 20,
+    fontSize: 24,
 
     fontWeight: "700",
 
     color: "#16A34A",
-  },
 
-  category: {
-    marginTop: 8,
-
-    fontWeight: "600",
-
-    color: "#0F172A",
+    marginBottom: 8,
   },
 
   note: {
-    marginTop: 4,
+    color: "#475569",
 
-    color: "#64748B",
+    fontSize: 14,
+
+    lineHeight: 20,
+
+    marginBottom: 10,
   },
 
   date: {
-    marginTop: 10,
-
     color: "#94A3B8",
 
     fontSize: 12,

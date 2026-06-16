@@ -1,6 +1,11 @@
 import { supabase } from "@/lib/supabase";
 
-import { CreateExpensePayload, Expense, ExpenseCategory } from "./types";
+import {
+  CreateExpensePayload,
+  Expense,
+  ExpenseCategory,
+  UpdateExpensePayload,
+} from "./types";
 
 export const expenseService = {
   async getAll(): Promise<Expense[]> {
@@ -32,14 +37,49 @@ export const expenseService = {
     return data;
   },
 
-  async create(payload: CreateExpensePayload) {
+  async create(payload: CreateExpensePayload): Promise<void> {
     const { error } = await supabase.from("expenses").insert({
       category: payload.category,
-
       amount: payload.amount,
-
       description: payload.description,
     });
+
+    if (error) {
+      throw error;
+    }
+  },
+
+  async update(id: string, payload: UpdateExpensePayload): Promise<Expense> {
+    const { data, error } = await supabase
+      .from("expenses")
+      .update({
+        category: payload.category,
+        amount: payload.amount,
+        description: payload.description,
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    console.log("UPDATE RESULT:", data);
+    console.log("UPDATE ERROR:", error);
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  },
+
+  async delete(id: string): Promise<void> {
+    const { data, error } = await supabase
+      .from("expenses")
+      .delete()
+      .eq("id", id)
+      .select();
+
+    console.log("DELETE RESULT:", data);
+    console.log("DELETE ERROR:", error);
 
     if (error) {
       throw error;
@@ -72,9 +112,7 @@ export const expenseService = {
 
     return Object.entries(grouped).map(([category, amount]) => ({
       category,
-
       amount,
-
       percentage: total > 0 ? Math.round((amount / total) * 100) : 0,
     }));
   },

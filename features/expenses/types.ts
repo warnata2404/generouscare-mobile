@@ -18,6 +18,14 @@ export interface CreateExpensePayload {
   description?: string;
 }
 
+export interface UpdateExpensePayload {
+  category: string;
+
+  amount: number;
+
+  description?: string;
+}
+
 export interface ExpenseCategory {
   category: string;
 

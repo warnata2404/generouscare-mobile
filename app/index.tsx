@@ -9,7 +9,9 @@ export default function IndexScreen() {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (loading) return;
+    if (loading) {
+      return;
+    }
 
     if (user) {
       router.replace("/dashboard");

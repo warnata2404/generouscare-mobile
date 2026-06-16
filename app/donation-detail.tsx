@@ -106,6 +106,10 @@ export default function DonationDetailScreen() {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.header}>Detail Donasi</Text>
 
+      <Text style={styles.subtitle}>
+        Kelola informasi donasi yang telah tercatat.
+      </Text>
+
       <DonationDetailCard donation={donation} />
 
       <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
@@ -135,29 +139,63 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: "700",
-    marginBottom: 20,
     color: "#0F172A",
+    marginBottom: 4,
+  },
+
+  subtitle: {
+    color: "#64748B",
+    marginBottom: 20,
+    fontSize: 14,
   },
 
   editButton: {
     backgroundColor: "#2563EB",
+
     padding: 16,
-    borderRadius: 16,
+
+    borderRadius: 18,
+
     alignItems: "center",
-    marginTop: 16,
-    marginBottom: 12,
+
+    marginTop: 20,
+
+    shadowColor: "#000",
+
+    shadowOpacity: 0.06,
+
+    shadowRadius: 8,
+
+    elevation: 3,
   },
 
   deleteButton: {
     backgroundColor: "#DC2626",
+
     padding: 16,
-    borderRadius: 16,
+
+    borderRadius: 18,
+
     alignItems: "center",
+
+    marginTop: 12,
+
     marginBottom: 32,
+
+    shadowColor: "#000",
+
+    shadowOpacity: 0.06,
+
+    shadowRadius: 8,
+
+    elevation: 3,
   },
 
   buttonText: {
     color: "#FFFFFF",
+
     fontWeight: "700",
+
+    fontSize: 15,
   },
 });

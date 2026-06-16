@@ -4,18 +4,27 @@ import { supabase } from "@/lib/supabase";
 
 import { donationService } from "./donation.service";
 
-import { Donation } from "./types";
+import { Donation, DonationCategoryStatistic } from "./types";
 
 export function useDonations() {
   const [donations, setDonations] = useState<Donation[]>([]);
+
+  const [categoryStatistics, setCategoryStatistics] = useState<
+    DonationCategoryStatistic[]
+  >([]);
 
   const [loading, setLoading] = useState(true);
 
   const loadDonations = useCallback(async () => {
     try {
-      const result = await donationService.getAll();
+      const [donationsResult, statisticsResult] = await Promise.all([
+        donationService.getAll(),
+        donationService.getCategoryStatistics(),
+      ]);
 
-      setDonations(result);
+      setDonations(donationsResult);
+
+      setCategoryStatistics(statisticsResult);
     } catch (error) {
       console.error("Load Donations Error:", error);
     } finally {
@@ -49,7 +58,11 @@ export function useDonations() {
 
   return {
     donations,
+
+    categoryStatistics,
+
     loading,
+
     refresh: loadDonations,
   };
 }

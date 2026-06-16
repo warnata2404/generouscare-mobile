@@ -31,16 +31,21 @@ export const dashboardService = {
     const totalExpenses =
       expenses?.reduce((sum, item) => sum + Number(item.amount), 0) ?? 0;
 
+    const remainingFunds = totalDonations - totalExpenses;
+
+    const distributionRate =
+      totalDonations > 0
+        ? Math.round((totalExpenses / totalDonations) * 100)
+        : 0;
+
     return {
       totalDonations,
 
       totalExpenses,
 
-      remainingFunds: totalDonations - totalExpenses,
+      remainingFunds,
 
-      donationCount: donations?.length ?? 0,
-
-      expenseCount: expenses?.length ?? 0,
+      distributionRate,
     };
   },
 

@@ -14,6 +14,8 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 
+import { DONATION_CATEGORIES } from "@/features/donations/constants";
+
 interface DonationFormInitialValues {
   amount?: number;
 
@@ -54,6 +56,8 @@ export default function DonationForm({
   const [amount, setAmount] = useState(initialValues?.amount?.toString() ?? "");
 
   const [category, setCategory] = useState(initialValues?.category ?? "");
+
+  const [showCategories, setShowCategories] = useState(false);
 
   const [note, setNote] = useState(initialValues?.note ?? "");
 
@@ -125,6 +129,8 @@ export default function DonationForm({
 
     setCategory("");
 
+    setShowCategories(false);
+
     setNote("");
 
     setLatitude(undefined);
@@ -175,12 +181,45 @@ export default function DonationForm({
         onChangeText={setAmount}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Kategori"
-        value={category}
-        onChangeText={setCategory}
-      />
+      <Text style={styles.label}>Kategori Donasi</Text>
+
+      <TouchableOpacity
+        style={styles.categorySelector}
+        onPress={() => setShowCategories(!showCategories)}
+      >
+        <Text
+          style={[styles.categoryText, !category && styles.categoryPlaceholder]}
+        >
+          {category || "Pilih Kategori"}
+        </Text>
+      </TouchableOpacity>
+
+      {showCategories && (
+        <View style={styles.categoryContainer}>
+          {DONATION_CATEGORIES.map((item) => (
+            <TouchableOpacity
+              key={item}
+              style={[
+                styles.categoryItem,
+                category === item && styles.categoryItemActive,
+              ]}
+              onPress={() => {
+                setCategory(item);
+                setShowCategories(false);
+              }}
+            >
+              <Text
+                style={[
+                  styles.categoryItemText,
+                  category === item && styles.categoryItemTextActive,
+                ]}
+              >
+                {item}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
       <TextInput
         style={styles.input}
@@ -240,6 +279,57 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
+  },
+
+  label: {
+    marginBottom: 8,
+    marginTop: 4,
+    fontWeight: "600",
+    color: "#0F172A",
+  },
+
+  categorySelector: {
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+  },
+
+  categoryText: {
+    color: "#0F172A",
+  },
+
+  categoryPlaceholder: {
+    color: "#94A3B8",
+  },
+
+  categoryContainer: {
+    marginBottom: 12,
+  },
+
+  categoryItem: {
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 8,
+  },
+
+  categoryItemActive: {
+    backgroundColor: "#DCFCE7",
+    borderColor: "#22C55E",
+  },
+
+  categoryItemText: {
+    color: "#0F172A",
+  },
+
+  categoryItemTextActive: {
+    color: "#15803D",
+    fontWeight: "700",
   },
 
   locationButton: {

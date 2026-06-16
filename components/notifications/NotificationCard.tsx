@@ -16,34 +16,64 @@ export default function NotificationCard({
   const getTypeColor = () => {
     switch (type) {
       case "success":
-        return "#10B981";
+        return "#16A34A";
 
       case "warning":
-        return "#F59E0B";
+        return "#EA580C";
 
       default:
-        return "#3B82F6";
+        return "#2563EB";
+    }
+  };
+
+  const getTypeLabel = () => {
+    switch (type) {
+      case "success":
+        return "Berhasil";
+
+      case "warning":
+        return "Peringatan";
+
+      default:
+        return "Informasi";
+    }
+  };
+
+  const getTypeIcon = () => {
+    switch (type) {
+      case "success":
+        return "✅";
+
+      case "warning":
+        return "⚠️";
+
+      default:
+        return "ℹ️";
     }
   };
 
   return (
     <View style={styles.card}>
-      <View
-        style={[
-          styles.indicator,
-          {
-            backgroundColor: getTypeColor(),
-          },
-        ]}
-      />
-
-      <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
-
-        <Text style={styles.message}>{message}</Text>
+      <View style={styles.header}>
+        <View
+          style={[
+            styles.badge,
+            {
+              backgroundColor: getTypeColor(),
+            },
+          ]}
+        >
+          <Text style={styles.badgeText}>
+            {getTypeIcon()} {getTypeLabel()}
+          </Text>
+        </View>
 
         <Text style={styles.date}>{createdAt}</Text>
       </View>
+
+      <Text style={styles.title}>{title}</Text>
+
+      <Text style={styles.message}>{message}</Text>
     </View>
   );
 }
@@ -51,42 +81,67 @@ export default function NotificationCard({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
+
     borderRadius: 20,
+
     padding: 16,
+
     marginBottom: 12,
-    flexDirection: "row",
 
     shadowColor: "#000",
+
     shadowOpacity: 0.05,
+
     shadowRadius: 8,
 
     elevation: 3,
   },
 
-  indicator: {
-    width: 6,
-    borderRadius: 6,
-    marginRight: 12,
+  header: {
+    flexDirection: "row",
+
+    justifyContent: "space-between",
+
+    alignItems: "center",
+
+    marginBottom: 12,
   },
 
-  content: {
-    flex: 1,
+  badge: {
+    paddingHorizontal: 10,
+
+    paddingVertical: 5,
+
+    borderRadius: 999,
+  },
+
+  badgeText: {
+    color: "#FFFFFF",
+
+    fontSize: 11,
+
+    fontWeight: "700",
+  },
+
+  date: {
+    fontSize: 12,
+
+    color: "#94A3B8",
   },
 
   title: {
     fontSize: 16,
+
     fontWeight: "700",
+
     color: "#0F172A",
+
+    marginBottom: 6,
   },
 
   message: {
-    marginTop: 4,
     color: "#64748B",
-  },
 
-  date: {
-    marginTop: 8,
-    fontSize: 12,
-    color: "#94A3B8",
+    lineHeight: 22,
   },
 });

@@ -5,9 +5,7 @@ export interface DashboardStats {
 
   remainingFunds: number;
 
-  donationCount: number;
-
-  expenseCount: number;
+  distributionRate: number;
 }
 
 export interface AgentRecommendation {

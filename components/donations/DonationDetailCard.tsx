@@ -1,5 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import { router } from "expo-router";
 
 import MapView, { Marker } from "react-native-maps";
@@ -42,18 +44,17 @@ export default function DonationDetailCard({ donation }: Props) {
         </TouchableOpacity>
       ) : null}
 
+      <View style={styles.badge}>
+        <MaterialCommunityIcons name="hand-heart" size={16} color="#15803D" />
+
+        <Text style={styles.badgeText}>{donation.category}</Text>
+      </View>
+
       <Text style={styles.amount}>{formatRupiah(donation.amount)}</Text>
 
       <InfoItem label="Kategori" value={donation.category} />
 
       <InfoItem label="Catatan" value={donation.note || "-"} />
-
-      <InfoItem label="Latitude" value={donation.latitude?.toString() || "-"} />
-
-      <InfoItem
-        label="Longitude"
-        value={donation.longitude?.toString() || "-"}
-      />
 
       {donation.latitude && donation.longitude ? (
         <View style={styles.mapContainer}>
@@ -80,6 +81,13 @@ export default function DonationDetailCard({ donation }: Props) {
         </View>
       ) : null}
 
+      <InfoItem label="Latitude" value={donation.latitude?.toString() || "-"} />
+
+      <InfoItem
+        label="Longitude"
+        value={donation.longitude?.toString() || "-"}
+      />
+
       <InfoItem
         label="Tanggal Donasi"
         value={new Date(donation.created_at).toLocaleString("id-ID")}
@@ -104,9 +112,17 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
 
-    borderRadius: 20,
+    borderRadius: 24,
 
     padding: 20,
+
+    shadowColor: "#000",
+
+    shadowOpacity: 0.06,
+
+    shadowRadius: 10,
+
+    elevation: 4,
   },
 
   image: {
@@ -114,7 +130,7 @@ const styles = StyleSheet.create({
 
     height: 240,
 
-    borderRadius: 16,
+    borderRadius: 18,
 
     backgroundColor: "#F1F5F9",
   },
@@ -131,6 +147,62 @@ const styles = StyleSheet.create({
     marginTop: 8,
 
     marginBottom: 20,
+  },
+
+  badge: {
+    flexDirection: "row",
+
+    alignItems: "center",
+
+    alignSelf: "flex-start",
+
+    backgroundColor: "#DCFCE7",
+
+    borderRadius: 999,
+
+    paddingHorizontal: 12,
+
+    paddingVertical: 6,
+
+    marginBottom: 12,
+
+    gap: 6,
+  },
+
+  badgeText: {
+    color: "#15803D",
+
+    fontWeight: "700",
+
+    fontSize: 12,
+  },
+
+  amount: {
+    fontSize: 30,
+
+    fontWeight: "700",
+
+    color: "#16A34A",
+
+    marginBottom: 24,
+  },
+
+  item: {
+    marginBottom: 18,
+  },
+
+  label: {
+    fontSize: 12,
+
+    color: "#64748B",
+
+    marginBottom: 4,
+  },
+
+  value: {
+    fontSize: 16,
+
+    color: "#0F172A",
   },
 
   mapContainer: {
@@ -152,34 +224,6 @@ const styles = StyleSheet.create({
 
     height: 220,
 
-    borderRadius: 16,
-  },
-
-  amount: {
-    fontSize: 28,
-
-    fontWeight: "700",
-
-    color: "#16A34A",
-
-    marginBottom: 24,
-  },
-
-  item: {
-    marginBottom: 16,
-  },
-
-  label: {
-    fontSize: 12,
-
-    color: "#64748B",
-
-    marginBottom: 4,
-  },
-
-  value: {
-    fontSize: 16,
-
-    color: "#0F172A",
+    borderRadius: 18,
   },
 });

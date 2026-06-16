@@ -86,13 +86,11 @@ export function useDashboard() {
 
   return {
     stats,
-
     recommendation,
-
     activities,
-
     chartData,
-
     loading,
+
+    refreshDashboard: loadDashboard,
   };
 }

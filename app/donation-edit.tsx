@@ -94,7 +94,9 @@ export default function DonationEditScreen() {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.header}>Edit Donasi</Text>
 
-      <Text style={styles.subtitle}>Perbarui data donasi.</Text>
+      <Text style={styles.subtitle}>
+        Perbarui informasi donasi yang telah tersimpan.
+      </Text>
 
       <DonationForm
         initialValues={{
@@ -134,6 +136,7 @@ const styles = StyleSheet.create({
   },
 
   subtitle: {
+    fontSize: 14,
     color: "#64748B",
     marginBottom: 20,
   },

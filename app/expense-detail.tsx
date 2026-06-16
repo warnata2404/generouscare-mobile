@@ -1,14 +1,16 @@
 import {
   ActivityIndicator,
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
-import { useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 
 import ExpenseDetailCard from "@/components/expenses/ExpenseDetailCard";
 
@@ -35,9 +37,45 @@ export default function ExpenseDetailScreen() {
     }
   }, [id]);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  const handleDelete = async () => {
+    if (!expense) {
+      return;
+    }
+
+    Alert.alert(
+      "Hapus Pengeluaran",
+      "Apakah Anda yakin ingin menghapus data ini?",
+      [
+        {
+          text: "Batal",
+          style: "cancel",
+        },
+        {
+          text: "Hapus",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await expenseService.delete(expense.id);
+
+              Alert.alert("Berhasil", "Pengeluaran berhasil dihapus.");
+
+              router.replace("/expenses");
+            } catch (error: any) {
+              Alert.alert("Gagal", error.message);
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+
+      loadData();
+    }, [loadData]),
+  );
 
   if (loading) {
     return (
@@ -60,6 +98,24 @@ export default function ExpenseDetailScreen() {
       <Text style={styles.header}>Detail Pengeluaran</Text>
 
       <ExpenseDetailCard expense={expense} />
+
+      <TouchableOpacity
+        style={styles.editButton}
+        onPress={() =>
+          router.push({
+            pathname: "/expense-edit",
+            params: {
+              id: expense.id,
+            },
+          })
+        }
+      >
+        <Text style={styles.buttonText}>Edit Pengeluaran</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+        <Text style={styles.buttonText}>Hapus Pengeluaran</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -82,5 +138,35 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#0F172A",
     marginBottom: 20,
+  },
+
+  editButton: {
+    marginTop: 20,
+
+    backgroundColor: "#2563EB",
+
+    padding: 16,
+
+    borderRadius: 16,
+
+    alignItems: "center",
+  },
+
+  deleteButton: {
+    marginTop: 12,
+
+    backgroundColor: "#DC2626",
+
+    padding: 16,
+
+    borderRadius: 16,
+
+    alignItems: "center",
+  },
+
+  buttonText: {
+    color: "#FFFFFF",
+
+    fontWeight: "700",
   },
 });

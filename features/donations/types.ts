@@ -49,3 +49,11 @@ export interface UpdateDonationPayload {
 
   imageUri?: string;
 }
+
+export interface DonationCategoryStatistic {
+  category: string;
+
+  amount: number;
+
+  percentage: number;
+}
