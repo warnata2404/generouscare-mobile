@@ -1,14 +1,16 @@
 import {
   ActivityIndicator,
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 
 import { useCallback, useEffect, useState } from "react";
 
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 import DonationDetailCard from "@/components/donations/DonationDetailCard";
 
@@ -39,6 +41,51 @@ export default function DonationDetailScreen() {
     loadData();
   }, [loadData]);
 
+  const handleEdit = () => {
+    if (!donation) {
+      return;
+    }
+
+    router.push({
+      pathname: "/donation-edit",
+      params: {
+        id: donation.id,
+      },
+    });
+  };
+
+  const handleDelete = () => {
+    if (!donation) {
+      return;
+    }
+
+    Alert.alert(
+      "Hapus Donasi",
+      "Apakah Anda yakin ingin menghapus donasi ini?",
+      [
+        {
+          text: "Batal",
+          style: "cancel",
+        },
+        {
+          text: "Hapus",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await donationService.delete(donation.id);
+
+              Alert.alert("Berhasil", "Donasi berhasil dihapus.");
+
+              router.replace("/donations");
+            } catch (error: any) {
+              Alert.alert("Gagal", error?.message || "Gagal menghapus donasi.");
+            }
+          },
+        },
+      ],
+    );
+  };
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -60,6 +107,14 @@ export default function DonationDetailScreen() {
       <Text style={styles.header}>Detail Donasi</Text>
 
       <DonationDetailCard donation={donation} />
+
+      <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
+        <Text style={styles.buttonText}>Edit Donasi</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+        <Text style={styles.buttonText}>Hapus Donasi</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -82,5 +137,27 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 20,
     color: "#0F172A",
+  },
+
+  editButton: {
+    backgroundColor: "#2563EB",
+    padding: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    marginTop: 16,
+    marginBottom: 12,
+  },
+
+  deleteButton: {
+    backgroundColor: "#DC2626",
+    padding: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    marginBottom: 32,
+  },
+
+  buttonText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
   },
 });

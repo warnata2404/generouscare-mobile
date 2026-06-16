@@ -25,8 +25,6 @@ export default function DonationCreateScreen() {
         imageUri,
       });
 
-      Alert.alert("Berhasil", "Donasi berhasil ditambahkan.");
-
       router.replace("/donations");
     } catch (error: any) {
       Alert.alert(
@@ -37,12 +35,16 @@ export default function DonationCreateScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.header}>Tambah Donasi</Text>
 
       <Text style={styles.subtitle}>Tambahkan data donasi baru.</Text>
 
-      <DonationForm onSubmit={handleCreate} />
+      <DonationForm
+        submitLabel="Simpan Donasi"
+        successMessage="Donasi berhasil ditambahkan."
+        onSubmit={handleCreate}
+      />
     </ScrollView>
   );
 }

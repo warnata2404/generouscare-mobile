@@ -14,7 +14,27 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 
+interface DonationFormInitialValues {
+  amount?: number;
+
+  category?: string;
+
+  note?: string;
+
+  latitude?: number;
+
+  longitude?: number;
+
+  imageUri?: string;
+}
+
 interface DonationFormProps {
+  initialValues?: DonationFormInitialValues;
+
+  submitLabel?: string;
+
+  successMessage?: string;
+
   onSubmit: (
     amount: number,
     category: string,
@@ -25,18 +45,29 @@ interface DonationFormProps {
   ) => Promise<void>;
 }
 
-export default function DonationForm({ onSubmit }: DonationFormProps) {
-  const [amount, setAmount] = useState("");
+export default function DonationForm({
+  onSubmit,
+  initialValues,
+  submitLabel = "Simpan Donasi",
+  successMessage = "Donasi berhasil disimpan.",
+}: DonationFormProps) {
+  const [amount, setAmount] = useState(initialValues?.amount?.toString() ?? "");
 
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(initialValues?.category ?? "");
 
-  const [note, setNote] = useState("");
+  const [note, setNote] = useState(initialValues?.note ?? "");
 
-  const [latitude, setLatitude] = useState<number | undefined>();
+  const [latitude, setLatitude] = useState<number | undefined>(
+    initialValues?.latitude,
+  );
 
-  const [longitude, setLongitude] = useState<number | undefined>();
+  const [longitude, setLongitude] = useState<number | undefined>(
+    initialValues?.longitude,
+  );
 
-  const [imageUri, setImageUri] = useState<string | undefined>();
+  const [imageUri, setImageUri] = useState<string | undefined>(
+    initialValues?.imageUri,
+  );
 
   const [loading, setLoading] = useState(false);
 
@@ -89,6 +120,20 @@ export default function DonationForm({ onSubmit }: DonationFormProps) {
     }
   };
 
+  const resetForm = () => {
+    setAmount("");
+
+    setCategory("");
+
+    setNote("");
+
+    setLatitude(undefined);
+
+    setLongitude(undefined);
+
+    setImageUri(undefined);
+  };
+
   const handleSubmit = async () => {
     if (!amount || !category || !note) {
       Alert.alert("Validasi", "Semua field wajib diisi.");
@@ -108,16 +153,11 @@ export default function DonationForm({ onSubmit }: DonationFormProps) {
         imageUri,
       );
 
-      setAmount("");
-      setCategory("");
-      setNote("");
+      Alert.alert("Berhasil", successMessage);
 
-      setLatitude(undefined);
-      setLongitude(undefined);
-
-      setImageUri(undefined);
-
-      Alert.alert("Berhasil", "Donasi berhasil ditambahkan.");
+      if (!initialValues) {
+        resetForm();
+      }
     } catch (error: any) {
       Alert.alert("Gagal", error?.message || "Terjadi kesalahan.");
     } finally {
@@ -156,21 +196,26 @@ export default function DonationForm({ onSubmit }: DonationFormProps) {
         <Text style={styles.locationButtonText}>Ambil Lokasi Saat Ini</Text>
       </TouchableOpacity>
 
-      {latitude && longitude && (
+      {latitude && longitude ? (
         <View style={styles.locationContainer}>
           <Text style={styles.locationText}>Latitude: {latitude}</Text>
 
           <Text style={styles.locationText}>Longitude: {longitude}</Text>
         </View>
-      )}
+      ) : null}
 
       <TouchableOpacity style={styles.photoButton} onPress={handlePickImage}>
         <Text style={styles.photoButtonText}>Pilih Foto Donasi</Text>
       </TouchableOpacity>
 
-      {imageUri && (
-        <Image source={{ uri: imageUri }} style={styles.previewImage} />
-      )}
+      {imageUri ? (
+        <Image
+          source={{
+            uri: imageUri,
+          }}
+          style={styles.previewImage}
+        />
+      ) : null}
 
       <TouchableOpacity
         style={styles.button}
@@ -180,7 +225,7 @@ export default function DonationForm({ onSubmit }: DonationFormProps) {
         {loading ? (
           <ActivityIndicator color="#FFFFFF" />
         ) : (
-          <Text style={styles.buttonText}>Simpan Donasi</Text>
+          <Text style={styles.buttonText}>{submitLabel}</Text>
         )}
       </TouchableOpacity>
     </View>
@@ -240,6 +285,7 @@ const styles = StyleSheet.create({
     height: 220,
     borderRadius: 16,
     marginBottom: 12,
+    backgroundColor: "#F1F5F9",
   },
 
   button: {

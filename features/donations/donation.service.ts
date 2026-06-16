@@ -83,7 +83,9 @@ export const donationService = {
 
   async deletePhoto(photoUrl: string) {
     try {
-      const fileName = photoUrl.split("/").pop();
+      const url = new URL(photoUrl);
+
+      const fileName = url.pathname.split("/").pop();
 
       if (!fileName) {
         return;
