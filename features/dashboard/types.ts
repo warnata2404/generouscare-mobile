@@ -1,7 +1,13 @@
 export interface DashboardStats {
   totalDonations: number;
+
   totalExpenses: number;
+
   remainingFunds: number;
+
+  donationCount: number;
+
+  expenseCount: number;
 }
 
 export interface AgentRecommendation {

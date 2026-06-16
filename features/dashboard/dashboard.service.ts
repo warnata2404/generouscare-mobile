@@ -4,11 +4,21 @@ import { ActivityItem, AgentRecommendation, DashboardStats } from "./types";
 
 export const dashboardService = {
   async getStats(): Promise<DashboardStats> {
-    const { data: donations } = await supabase
+    const { data: donations, error: donationError } = await supabase
       .from("donations")
       .select("amount");
 
-    const { data: expenses } = await supabase.from("expenses").select("amount");
+    if (donationError) {
+      throw donationError;
+    }
+
+    const { data: expenses, error: expenseError } = await supabase
+      .from("expenses")
+      .select("amount");
+
+    if (expenseError) {
+      throw expenseError;
+    }
 
     const totalDonations =
       donations?.reduce((sum, item) => sum + Number(item.amount), 0) ?? 0;
@@ -18,8 +28,14 @@ export const dashboardService = {
 
     return {
       totalDonations,
+
       totalExpenses,
+
       remainingFunds: totalDonations - totalExpenses,
+
+      donationCount: donations?.length ?? 0,
+
+      expenseCount: expenses?.length ?? 0,
     };
   },
 
@@ -52,13 +68,21 @@ export const dashboardService = {
   },
 
   async getActivities(): Promise<ActivityItem[]> {
-    const { data: donations } = await supabase
+    const { data: donations, error: donationError } = await supabase
       .from("donations")
       .select("id, amount, category, created_at");
 
-    const { data: expenses } = await supabase
+    if (donationError) {
+      throw donationError;
+    }
+
+    const { data: expenses, error: expenseError } = await supabase
       .from("expenses")
       .select("id, amount, category, created_at");
+
+    if (expenseError) {
+      throw expenseError;
+    }
 
     const donationActivities =
       donations?.map((item) => ({

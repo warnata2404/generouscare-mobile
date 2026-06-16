@@ -54,6 +54,16 @@ export default function DashboardScreen() {
         value={formatRupiah(stats?.remainingFunds ?? 0)}
       />
 
+      <StatCard
+        title="Jumlah Donasi"
+        value={String(stats?.donationCount ?? 0)}
+      />
+
+      <StatCard
+        title="Jumlah Pengeluaran"
+        value={String(stats?.expenseCount ?? 0)}
+      />
+
       {recommendation && (
         <AgentCard
           title={recommendation.title}
