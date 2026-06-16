@@ -1,6 +1,10 @@
 import { supabase } from "@/lib/supabase";
 
-import { CreateDonationPayload, Donation } from "./types";
+import {
+  CreateDonationPayload,
+  Donation,
+  UpdateDonationPayload,
+} from "./types";
 
 export const donationService = {
   async getAll(): Promise<Donation[]> {
@@ -77,6 +81,30 @@ export const donationService = {
     }
   },
 
+  async deletePhoto(photoUrl: string) {
+    try {
+      const fileName = photoUrl.split("/").pop();
+
+      if (!fileName) {
+        return;
+      }
+
+      const { error } = await supabase.storage
+        .from("donations")
+        .remove([fileName]);
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("DELETE PHOTO SUCCESS:", fileName);
+    } catch (error) {
+      console.log("DELETE PHOTO FAILED:", error);
+
+      throw error;
+    }
+  },
+
   async create(payload: CreateDonationPayload) {
     const { data: authData } = await supabase.auth.getUser();
 
@@ -125,6 +153,74 @@ export const donationService = {
       console.log("CREATE DONATION SUCCESS");
     } catch (error) {
       console.log("CREATE DONATION FAILED:", error);
+
+      throw error;
+    }
+  },
+
+  async update(id: string, payload: UpdateDonationPayload) {
+    let photoUrl = payload.photo_url ?? null;
+
+    try {
+      const currentDonation = await this.getById(id);
+
+      if (!currentDonation) {
+        throw new Error("Donasi tidak ditemukan");
+      }
+
+      if (payload.imageUri) {
+        if (currentDonation.photo_url) {
+          await this.deletePhoto(currentDonation.photo_url);
+        }
+
+        photoUrl = await this.uploadDonationPhoto(payload.imageUri);
+      }
+
+      const { error } = await supabase
+        .from("donations")
+        .update({
+          amount: payload.amount,
+          category: payload.category,
+          note: payload.note,
+          latitude: payload.latitude,
+          longitude: payload.longitude,
+          photo_url: photoUrl,
+        })
+        .eq("id", id);
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("UPDATE DONATION SUCCESS");
+    } catch (error) {
+      console.log("UPDATE DONATION FAILED:", error);
+
+      throw error;
+    }
+  },
+
+  async delete(id: string) {
+    try {
+      const donation = await this.getById(id);
+
+      if (!donation) {
+        throw new Error("Donasi tidak ditemukan");
+      }
+
+      if (donation.photo_url) {
+        await this.deletePhoto(donation.photo_url);
+      }
+
+      const { error } = await supabase.from("donations").delete().eq("id", id);
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("DELETE DONATION SUCCESS");
+    } catch (error) {
+      console.log("DELETE DONATION FAILED:", error);
 
       throw error;
     }

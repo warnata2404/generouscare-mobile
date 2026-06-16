@@ -6,7 +6,7 @@ import {
   View,
 } from "react-native";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useLocalSearchParams } from "expo-router";
 
@@ -23,11 +23,7 @@ export default function DonationDetailScreen() {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const result = await donationService.getById(String(id));
 
@@ -37,7 +33,11 @@ export default function DonationDetailScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   if (loading) {
     return (

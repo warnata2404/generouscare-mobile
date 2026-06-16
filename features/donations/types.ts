@@ -33,3 +33,19 @@ export interface CreateDonationPayload {
 
   imageUri?: string;
 }
+
+export interface UpdateDonationPayload {
+  amount: number;
+
+  category: string;
+
+  note: string;
+
+  latitude?: number;
+
+  longitude?: number;
+
+  photo_url?: string | null;
+
+  imageUri?: string;
+}
