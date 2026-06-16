@@ -1,6 +1,11 @@
 import { supabase } from "@/lib/supabase";
 
-import { ActivityItem, AgentRecommendation, DashboardStats } from "./types";
+import {
+  ActivityItem,
+  AgentRecommendation,
+  DashboardStats,
+  MonthlyChartData,
+} from "./types";
 
 export const dashboardService = {
   async getStats(): Promise<DashboardStats> {
@@ -36,6 +41,63 @@ export const dashboardService = {
       donationCount: donations?.length ?? 0,
 
       expenseCount: expenses?.length ?? 0,
+    };
+  },
+
+  async getMonthlyChartData(): Promise<MonthlyChartData> {
+    const { data: donations, error: donationError } = await supabase
+      .from("donations")
+      .select("amount, created_at");
+
+    if (donationError) {
+      throw donationError;
+    }
+
+    const { data: expenses, error: expenseError } = await supabase
+      .from("expenses")
+      .select("amount, created_at");
+
+    if (expenseError) {
+      throw expenseError;
+    }
+
+    const labels = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "Mei",
+      "Jun",
+      "Jul",
+      "Agu",
+      "Sep",
+      "Okt",
+      "Nov",
+      "Des",
+    ];
+
+    const donationsPerMonth = Array(12).fill(0);
+
+    const expensesPerMonth = Array(12).fill(0);
+
+    donations?.forEach((item) => {
+      const month = new Date(item.created_at).getMonth();
+
+      donationsPerMonth[month] += Number(item.amount);
+    });
+
+    expenses?.forEach((item) => {
+      const month = new Date(item.created_at).getMonth();
+
+      expensesPerMonth[month] += Number(item.amount);
+    });
+
+    return {
+      labels,
+
+      donations: donationsPerMonth,
+
+      expenses: expensesPerMonth,
     };
   },
 

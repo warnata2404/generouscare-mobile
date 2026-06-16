@@ -4,7 +4,12 @@ import { supabase } from "@/lib/supabase";
 
 import { dashboardService } from "./dashboard.service";
 
-import { ActivityItem, AgentRecommendation, DashboardStats } from "./types";
+import {
+  ActivityItem,
+  AgentRecommendation,
+  DashboardStats,
+  MonthlyChartData,
+} from "./types";
 
 export function useDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -14,19 +19,29 @@ export function useDashboard() {
 
   const [activities, setActivities] = useState<ActivityItem[]>([]);
 
+  const [chartData, setChartData] = useState<MonthlyChartData | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   const loadDashboard = useCallback(async () => {
     try {
-      const statsData = await dashboardService.getStats();
-
-      const recommendationData = await dashboardService.getRecommendation();
-
-      const activitiesData = await dashboardService.getActivities();
+      const [statsData, recommendationData, activitiesData, chartDataResult] =
+        await Promise.all([
+          dashboardService.getStats(),
+          dashboardService.getRecommendation(),
+          dashboardService.getActivities(),
+          dashboardService.getMonthlyChartData(),
+        ]);
 
       setStats(statsData);
+
       setRecommendation(recommendationData);
+
       setActivities(activitiesData);
+
+      setChartData(chartDataResult);
+    } catch (error) {
+      console.error("LOAD DASHBOARD ERROR:", error);
     } finally {
       setLoading(false);
     }
@@ -60,7 +75,9 @@ export function useDashboard() {
         },
       );
 
-    channel.subscribe();
+    channel.subscribe((status) => {
+      console.log("DASHBOARD CHANNEL STATUS:", status);
+    });
 
     return () => {
       channel.unsubscribe();
@@ -69,8 +86,13 @@ export function useDashboard() {
 
   return {
     stats,
+
     recommendation,
+
     activities,
+
+    chartData,
+
     loading,
   };
 }

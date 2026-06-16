@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Dimensions,
   ScrollView,
   StyleSheet,
   Text,
@@ -8,6 +9,10 @@ import {
 } from "react-native";
 
 import { router } from "expo-router";
+
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+import { LineChart } from "react-native-chart-kit";
 
 import ActivityCard from "@/components/dashboard/ActivityCard";
 import AgentCard from "@/components/dashboard/AgentCard";
@@ -21,7 +26,10 @@ import { formatRupiah } from "@/lib/currency";
 export default function DashboardScreen() {
   useAgent();
 
-  const { stats, recommendation, activities, loading } = useDashboard();
+  const chartWidth = Dimensions.get("window").width - 32;
+
+  const { stats, recommendation, activities, chartData, loading } =
+    useDashboard();
 
   if (loading) {
     return (
@@ -40,6 +48,11 @@ export default function DashboardScreen() {
       </Text>
 
       <StatCard
+        title="Dana Tersisa"
+        value={formatRupiah(stats?.remainingFunds ?? 0)}
+      />
+
+      <StatCard
         title="Total Donasi"
         value={formatRupiah(stats?.totalDonations ?? 0)}
       />
@@ -49,20 +62,59 @@ export default function DashboardScreen() {
         value={formatRupiah(stats?.totalExpenses ?? 0)}
       />
 
-      <StatCard
-        title="Dana Tersisa"
-        value={formatRupiah(stats?.remainingFunds ?? 0)}
-      />
+      <View style={styles.counterRow}>
+        <View style={styles.counterItem}>
+          <StatCard
+            title="Jumlah Donasi"
+            value={String(stats?.donationCount ?? 0)}
+          />
+        </View>
 
-      <StatCard
-        title="Jumlah Donasi"
-        value={String(stats?.donationCount ?? 0)}
-      />
+        <View style={styles.counterItem}>
+          <StatCard
+            title="Jumlah Pengeluaran"
+            value={String(stats?.expenseCount ?? 0)}
+          />
+        </View>
+      </View>
 
-      <StatCard
-        title="Jumlah Pengeluaran"
-        value={String(stats?.expenseCount ?? 0)}
-      />
+      {chartData && (
+        <>
+          <Text style={styles.section}>Grafik Donasi vs Pengeluaran</Text>
+
+          <View style={styles.chartContainer}>
+            <LineChart
+              data={{
+                labels: chartData.labels,
+                datasets: [
+                  {
+                    data: chartData.donations,
+                  },
+                  {
+                    data: chartData.expenses,
+                  },
+                ],
+                legend: ["Donasi", "Pengeluaran"],
+              }}
+              width={chartWidth}
+              height={260}
+              yAxisLabel="Rp "
+              chartConfig={{
+                backgroundGradientFrom: "#FFFFFF",
+                backgroundGradientTo: "#FFFFFF",
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(37, 99, 235, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(15, 23, 42, ${opacity})`,
+                propsForDots: {
+                  r: "4",
+                },
+              }}
+              bezier
+              style={styles.chart}
+            />
+          </View>
+        </>
+      )}
 
       {recommendation && (
         <AgentCard
@@ -87,40 +139,54 @@ export default function DashboardScreen() {
         </View>
       )}
 
-      <TouchableOpacity
-        style={styles.trackerButton}
-        onPress={() => router.push("/tracker")}
-      >
-        <Text style={styles.buttonText}>Lihat Fund Tracker</Text>
-      </TouchableOpacity>
+      <Text style={styles.section}>Menu Cepat</Text>
 
-      <TouchableOpacity
-        style={styles.notificationButton}
-        onPress={() => router.push("/notifications")}
-      >
-        <Text style={styles.buttonText}>Notification Center</Text>
-      </TouchableOpacity>
+      <View style={styles.menuGrid}>
+        <TouchableOpacity
+          style={[styles.menuCard, styles.donationMenu]}
+          onPress={() => router.push("/donations")}
+        >
+          <MaterialCommunityIcons name="hand-heart" size={32} color="#FFFFFF" />
 
-      <TouchableOpacity
-        style={styles.expenseButton}
-        onPress={() => router.push("/expenses")}
-      >
-        <Text style={styles.buttonText}>Kelola Pengeluaran</Text>
-      </TouchableOpacity>
+          <Text style={styles.menuText}>Donasi</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.donationButton}
-        onPress={() => router.push("/donations")}
-      >
-        <Text style={styles.buttonText}>Kelola Donasi</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.menuCard, styles.expenseMenu]}
+          onPress={() => router.push("/expenses")}
+        >
+          <MaterialCommunityIcons name="cash-minus" size={32} color="#FFFFFF" />
 
-      <TouchableOpacity
-        style={styles.profileButton}
-        onPress={() => router.push("/profile")}
-      >
-        <Text style={styles.buttonText}>Profil Saya</Text>
-      </TouchableOpacity>
+          <Text style={styles.menuText}>Pengeluaran</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.menuCard, styles.trackerMenu]}
+          onPress={() => router.push("/tracker")}
+        >
+          <MaterialCommunityIcons name="chart-line" size={32} color="#FFFFFF" />
+
+          <Text style={styles.menuText}>Tracker</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.menuCard, styles.notificationMenu]}
+          onPress={() => router.push("/notifications")}
+        >
+          <MaterialCommunityIcons name="bell" size={32} color="#FFFFFF" />
+
+          <Text style={styles.menuText}>Notifikasi</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.menuCard, styles.profileMenu]}
+          onPress={() => router.push("/profile")}
+        >
+          <MaterialCommunityIcons name="account" size={32} color="#FFFFFF" />
+
+          <Text style={styles.menuText}>Profil</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -151,12 +217,34 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
+  counterRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 8,
+  },
+
+  counterItem: {
+    flex: 1,
+  },
+
   section: {
     marginTop: 20,
     marginBottom: 12,
     fontSize: 18,
     fontWeight: "700",
     color: "#0F172A",
+  },
+
+  chartContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    paddingVertical: 12,
+    marginBottom: 20,
+    alignItems: "center",
+  },
+
+  chart: {
+    borderRadius: 20,
   },
 
   emptyContainer: {
@@ -170,46 +258,49 @@ const styles = StyleSheet.create({
     color: "#64748B",
   },
 
-  trackerButton: {
-    backgroundColor: "#22C55E",
-    padding: 16,
-    borderRadius: 16,
-    marginTop: 20,
-  },
-
-  notificationButton: {
-    backgroundColor: "#2563EB",
-    padding: 16,
-    borderRadius: 16,
-    marginTop: 12,
-  },
-
-  expenseButton: {
-    backgroundColor: "#DC2626",
-    padding: 16,
-    borderRadius: 16,
-    marginTop: 12,
-  },
-
-  donationButton: {
-    backgroundColor: "#7C3AED",
-    padding: 16,
-    borderRadius: 16,
-    marginTop: 12,
-  },
-
-  profileButton: {
-    backgroundColor: "#0891B2",
-    padding: 16,
-    borderRadius: 16,
-    marginTop: 12,
+  menuGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     marginBottom: 24,
   },
 
-  buttonText: {
+  menuCard: {
+    width: "48%",
+    height: 120,
+
+    borderRadius: 20,
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    marginBottom: 12,
+  },
+
+  donationMenu: {
+    backgroundColor: "#7C3AED",
+  },
+
+  expenseMenu: {
+    backgroundColor: "#DC2626",
+  },
+
+  trackerMenu: {
+    backgroundColor: "#22C55E",
+  },
+
+  notificationMenu: {
+    backgroundColor: "#2563EB",
+  },
+
+  profileMenu: {
+    backgroundColor: "#0891B2",
+  },
+
+  menuText: {
     color: "#FFFFFF",
-    textAlign: "center",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 15,
+    marginTop: 10,
   },
 });
