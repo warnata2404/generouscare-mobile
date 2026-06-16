@@ -9,6 +9,8 @@ import {
 
 import { useState } from "react";
 
+import AppHeader from "@/components/common/AppHeader";
+
 import { useTracker } from "@/features/tracker/useTracker";
 
 import { formatRupiah } from "@/lib/currency";
@@ -63,11 +65,10 @@ export default function TrackerScreen() {
       }
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.header}>Tracker Dana</Text>
-
-      <Text style={styles.subtitle}>
-        Monitoring transparansi pengelolaan dana donasi.
-      </Text>
+      <AppHeader
+        title="Tracker Dana"
+        subtitle="Monitoring transparansi pengelolaan dana donasi."
+      />
 
       <View style={styles.mainSummaryCard}>
         <Text style={styles.summaryLabel}>Dana Terkumpul</Text>
@@ -193,18 +194,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  header: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#0F172A",
-  },
-
-  subtitle: {
-    marginTop: 4,
-    marginBottom: 20,
-    color: "#64748B",
-  },
-
   mainSummaryCard: {
     backgroundColor: "#FFFFFF",
 
@@ -276,13 +265,15 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
+    marginTop: 8,
+
+    marginBottom: 12,
+
     fontSize: 18,
 
     fontWeight: "700",
 
     color: "#0F172A",
-
-    marginBottom: 12,
   },
 
   progressCard: {
@@ -293,6 +284,14 @@ const styles = StyleSheet.create({
     padding: 18,
 
     marginBottom: 20,
+
+    shadowColor: "#000",
+
+    shadowOpacity: 0.05,
+
+    shadowRadius: 8,
+
+    elevation: 3,
   },
 
   progressBarBackground: {

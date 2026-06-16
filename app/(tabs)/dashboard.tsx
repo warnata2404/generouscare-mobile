@@ -12,6 +12,8 @@ import {
 
 import { LineChart } from "react-native-chart-kit";
 
+import AppHeader from "@/components/common/AppHeader";
+
 import ActivityCard from "@/components/dashboard/ActivityCard";
 import AgentCard from "@/components/dashboard/AgentCard";
 import StatCard from "@/components/dashboard/StatCard";
@@ -19,11 +21,9 @@ import StatCard from "@/components/dashboard/StatCard";
 import { useAgent } from "@/features/agent/useAgent";
 import { useDashboard } from "@/features/dashboard/useDashboard";
 
-import { useAuth } from "@/hooks/useAuth";
 import { formatRupiah } from "@/lib/currency";
-export default function DashboardScreen() {
-  useAgent();
 
+export default function DashboardScreen() {
   const chartWidth = Dimensions.get("window").width - 32;
 
   const {
@@ -35,7 +35,7 @@ export default function DashboardScreen() {
     refreshDashboard,
   } = useDashboard();
 
-  const { user } = useAuth();
+  const { insights, loading: agentLoading } = useAgent();
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -70,21 +70,10 @@ export default function DashboardScreen() {
         />
       }
     >
-      <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeText}>
-          Halo, {user?.full_name || "Pengguna"} 👋
-        </Text>
-
-        <Text style={styles.welcomeSubText}>
-          Selamat datang kembali di GenerousCare
-        </Text>
-      </View>
-
-      <Text style={styles.header}>Dashboard</Text>
-
-      <Text style={styles.subtitle}>
-        Ringkasan kondisi dana dan aktivitas sosial terbaru.
-      </Text>
+      <AppHeader
+        title="Dashboard"
+        subtitle="Ringkasan kondisi dana dan aktivitas sosial terbaru."
+      />
 
       <View style={styles.heroCard}>
         <Text style={styles.heroLabel}>Dana Tersisa</Text>
@@ -118,7 +107,9 @@ export default function DashboardScreen() {
           />
         </View>
 
-        <View style={styles.statsItem} />
+        <View style={styles.statsItem}>
+          <StatCard title="Aktivitas" value={`${activities.length}`} />
+        </View>
       </View>
 
       {recommendation && (
@@ -126,6 +117,19 @@ export default function DashboardScreen() {
           title={recommendation.title}
           description={recommendation.description}
         />
+      )}
+
+      <Text style={styles.section}>Insight Utama</Text>
+
+      {!agentLoading && insights.length > 0 ? (
+        <AgentCard
+          title={insights[0].title}
+          description={insights[0].message}
+        />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Belum ada insight dari Agent.</Text>
+        </View>
       )}
 
       {chartData && (
@@ -136,7 +140,12 @@ export default function DashboardScreen() {
             <View style={styles.legendContainer}>
               <View style={styles.legendItem}>
                 <View
-                  style={[styles.legendColor, { backgroundColor: "#22C55E" }]}
+                  style={[
+                    styles.legendColor,
+                    {
+                      backgroundColor: "#22C55E",
+                    },
+                  ]}
                 />
 
                 <Text style={styles.legendText}>Donasi</Text>
@@ -144,7 +153,12 @@ export default function DashboardScreen() {
 
               <View style={styles.legendItem}>
                 <View
-                  style={[styles.legendColor, { backgroundColor: "#DC2626" }]}
+                  style={[
+                    styles.legendColor,
+                    {
+                      backgroundColor: "#DC2626",
+                    },
+                  ]}
                 />
 
                 <Text style={styles.legendText}>Pengeluaran</Text>
@@ -190,13 +204,15 @@ export default function DashboardScreen() {
       <Text style={styles.section}>Aktivitas Terbaru</Text>
 
       {activities.length > 0 ? (
-        activities.map((activity) => (
-          <ActivityCard
-            key={activity.id}
-            title={activity.title}
-            createdAt={activity.createdAt}
-          />
-        ))
+        activities
+          .slice(0, 3)
+          .map((activity) => (
+            <ActivityCard
+              key={activity.id}
+              title={activity.title}
+              createdAt={activity.createdAt}
+            />
+          ))
       ) : (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>Belum ada aktivitas.</Text>
@@ -217,35 +233,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  welcomeContainer: {
-    marginBottom: 20,
-  },
-
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#0F172A",
-  },
-
-  welcomeSubText: {
-    marginTop: 4,
-    fontSize: 14,
-    color: "#64748B",
-  },
-
-  header: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#0F172A",
-    marginBottom: 4,
-  },
-
-  subtitle: {
-    fontSize: 13,
-    color: "#64748B",
-    marginBottom: 20,
   },
 
   heroCard: {

@@ -1,5 +1,7 @@
 import { supabase } from "@/lib/supabase";
 
+import { createNotification } from "@/features/notifications/notification-helper";
+
 import {
   CreateDonationPayload,
   Donation,
@@ -130,17 +132,11 @@ export const donationService = {
         .from("donations")
         .insert({
           user_id: authData.user.id,
-
           amount: payload.amount,
-
           category: payload.category,
-
           note: payload.note,
-
           latitude: payload.latitude,
-
           longitude: payload.longitude,
-
           photo_url: photoUrl,
         })
         .select();
@@ -154,6 +150,15 @@ export const donationService = {
       }
 
       console.log("CREATE DONATION SUCCESS");
+
+      await createNotification(
+        "Donasi Baru",
+        `Donasi kategori ${payload.category} sebesar Rp${payload.amount.toLocaleString(
+          "id-ID",
+        )} berhasil ditambahkan.`,
+        "success",
+        "donation",
+      );
     } catch (error) {
       console.log("CREATE DONATION FAILED:", error);
 
@@ -196,6 +201,13 @@ export const donationService = {
       }
 
       console.log("UPDATE DONATION SUCCESS");
+
+      await createNotification(
+        "Donasi Diperbarui",
+        `Data donasi kategori ${payload.category} berhasil diperbarui.`,
+        "info",
+        "donation",
+      );
     } catch (error) {
       console.log("UPDATE DONATION FAILED:", error);
 
@@ -222,6 +234,13 @@ export const donationService = {
       }
 
       console.log("DELETE DONATION SUCCESS");
+
+      await createNotification(
+        "Donasi Dihapus",
+        `Data donasi kategori ${donation.category} berhasil dihapus.`,
+        "warning",
+        "donation",
+      );
     } catch (error) {
       console.log("DELETE DONATION FAILED:", error);
 
@@ -264,9 +283,7 @@ export const donationService = {
 
     return Object.entries(grouped).map(([category, amount]) => ({
       category,
-
       amount,
-
       percentage:
         totalAmount > 0 ? Math.round((amount / totalAmount) * 100) : 0,
     }));

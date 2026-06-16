@@ -11,9 +11,13 @@ import { useState } from "react";
 
 import { router } from "expo-router";
 
+import AppHeader from "@/components/common/AppHeader";
+
 import ExpenseCard from "@/components/expenses/ExpenseCard";
 
 import { useExpenses } from "@/features/expenses/useExpenses";
+
+import { formatRupiah } from "@/lib/currency";
 
 export default function ExpensesScreen() {
   const { expenses, loading, refresh } = useExpenses();
@@ -45,19 +49,16 @@ export default function ExpensesScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Daftar Pengeluaran</Text>
-
-      <Text style={styles.subtitle}>
-        Seluruh pengeluaran yang tercatat pada sistem.
-      </Text>
+      <AppHeader
+        title="Pengeluaran"
+        subtitle="Kelola dan pantau seluruh data pengeluaran."
+      />
 
       <View style={styles.summaryCard}>
         <View>
           <Text style={styles.summaryLabel}>Total Pengeluaran</Text>
 
-          <Text style={styles.summaryAmount}>
-            Rp {totalExpense.toLocaleString("id-ID")}
-          </Text>
+          <Text style={styles.summaryAmount}>{formatRupiah(totalExpense)}</Text>
         </View>
 
         <View style={styles.summaryDivider} />
@@ -92,6 +93,7 @@ export default function ExpensesScreen() {
           refreshing={refreshing}
           onRefresh={handleRefresh}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContainer}
         />
       ) : (
         <View style={styles.emptyContainer}>
@@ -117,18 +119,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  header: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#0F172A",
-  },
-
-  subtitle: {
-    marginTop: 4,
-    marginBottom: 20,
-    color: "#64748B",
   },
 
   summaryCard: {
@@ -205,6 +195,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
 
     fontSize: 16,
+  },
+
+  listContainer: {
+    paddingBottom: 24,
   },
 
   emptyContainer: {

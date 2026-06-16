@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { supabase } from "@/lib/supabase";
 
@@ -20,6 +20,37 @@ export function useNotifications() {
     }
   }, []);
 
+  const markAsRead = async (id: string) => {
+    await notificationService.markAsRead(id);
+
+    setNotifications((current) =>
+      current.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              isRead: true,
+            }
+          : item,
+      ),
+    );
+  };
+
+  const markAllAsRead = async () => {
+    await notificationService.markAllAsRead();
+
+    setNotifications((current) =>
+      current.map((item) => ({
+        ...item,
+        isRead: true,
+      })),
+    );
+  };
+
+  const unreadCount = useMemo(
+    () => notifications.filter((item) => !item.isRead).length,
+    [notifications],
+  );
+
   useEffect(() => {
     loadNotifications();
 
@@ -35,7 +66,9 @@ export function useNotifications() {
       },
     );
 
-    channel.subscribe();
+    channel.subscribe((status) => {
+      console.log("NOTIFICATION CHANNEL STATUS:", status);
+    });
 
     return () => {
       channel.unsubscribe();
@@ -46,5 +79,8 @@ export function useNotifications() {
     notifications,
     loading,
     refresh: loadNotifications,
+    markAsRead,
+    markAllAsRead,
+    unreadCount,
   };
 }

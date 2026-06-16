@@ -14,7 +14,8 @@ import NotificationCard from "@/components/notifications/NotificationCard";
 import { useNotifications } from "@/features/notifications/useNotifications";
 
 export default function NotificationsScreen() {
-  const { notifications, loading, refresh } = useNotifications();
+  const { notifications, loading, refresh, markAsRead, unreadCount } =
+    useNotifications();
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -30,12 +31,16 @@ export default function NotificationsScreen() {
 
   const totalNotifications = notifications.length;
 
-  const successCount = notifications.filter(
-    (item) => item.type === "success",
+  const donationCount = notifications.filter(
+    (item) => item.category === "donation",
   ).length;
 
-  const warningCount = notifications.filter(
-    (item) => item.type === "warning",
+  const expenseCount = notifications.filter(
+    (item) => item.category === "expense",
+  ).length;
+
+  const systemCount = notifications.filter(
+    (item) => item.category === "system",
   ).length;
 
   if (loading) {
@@ -68,34 +73,46 @@ export default function NotificationsScreen() {
         </View>
 
         <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Berhasil</Text>
+          <Text style={styles.summaryLabel}>Donasi</Text>
 
           <Text
             style={[
               styles.summaryValue,
               {
-                color: "#16A34A",
+                color: "#2563EB",
               },
             ]}
           >
-            {successCount}
+            {donationCount}
           </Text>
         </View>
 
         <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Peringatan</Text>
+          <Text style={styles.summaryLabel}>Pengeluaran</Text>
 
           <Text
             style={[
               styles.summaryValue,
               {
-                color: "#EA580C",
+                color: "#DC2626",
               },
             ]}
           >
-            {warningCount}
+            {expenseCount}
           </Text>
         </View>
+      </View>
+
+      <View style={styles.systemCard}>
+        <Text style={styles.systemLabel}>Notifikasi Sistem</Text>
+
+        <Text style={styles.systemValue}>{systemCount}</Text>
+      </View>
+
+      <View style={styles.unreadCard}>
+        <Text style={styles.unreadLabel}>Belum Dibaca</Text>
+
+        <Text style={styles.unreadValue}>{unreadCount}</Text>
       </View>
 
       {notifications.length > 0 ? (
@@ -105,7 +122,14 @@ export default function NotificationsScreen() {
             title={item.title}
             message={item.message}
             type={item.type}
+            category={item.category}
+            isRead={item.isRead}
             createdAt={item.createdAt}
+            onPress={() => {
+              if (!item.isRead) {
+                markAsRead(item.id);
+              }
+            }}
           />
         ))
       ) : (
@@ -149,7 +173,7 @@ const styles = StyleSheet.create({
   summaryContainer: {
     flexDirection: "row",
     gap: 10,
-    marginBottom: 20,
+    marginBottom: 16,
   },
 
   summaryCard: {
@@ -186,6 +210,76 @@ const styles = StyleSheet.create({
     fontWeight: "700",
 
     color: "#0F172A",
+  },
+
+  systemCard: {
+    backgroundColor: "#FFFFFF",
+
+    borderRadius: 18,
+
+    padding: 14,
+
+    marginBottom: 12,
+
+    alignItems: "center",
+
+    shadowColor: "#000",
+
+    shadowOpacity: 0.05,
+
+    shadowRadius: 8,
+
+    elevation: 2,
+  },
+
+  systemLabel: {
+    color: "#64748B",
+
+    marginBottom: 4,
+  },
+
+  systemValue: {
+    fontSize: 22,
+
+    fontWeight: "700",
+
+    color: "#64748B",
+  },
+
+  unreadCard: {
+    backgroundColor: "#FFFFFF",
+
+    borderRadius: 18,
+
+    padding: 14,
+
+    marginBottom: 20,
+
+    alignItems: "center",
+
+    shadowColor: "#000",
+
+    shadowOpacity: 0.05,
+
+    shadowRadius: 8,
+
+    elevation: 2,
+  },
+
+  unreadLabel: {
+    color: "#2563EB",
+
+    marginBottom: 4,
+
+    fontWeight: "600",
+  },
+
+  unreadValue: {
+    fontSize: 22,
+
+    fontWeight: "700",
+
+    color: "#2563EB",
   },
 
   emptyContainer: {

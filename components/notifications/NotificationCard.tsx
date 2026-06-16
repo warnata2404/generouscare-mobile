@@ -1,17 +1,23 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface NotificationCardProps {
   title: string;
   message: string;
-  type: string;
+  type: "info" | "success" | "warning";
+  category: "donation" | "expense" | "system";
   createdAt: string;
+  isRead?: boolean;
+  onPress?: () => void;
 }
 
 export default function NotificationCard({
   title,
   message,
   type,
+  category,
   createdAt,
+  isRead = false,
+  onPress,
 }: NotificationCardProps) {
   const getTypeColor = () => {
     switch (type) {
@@ -39,33 +45,64 @@ export default function NotificationCard({
     }
   };
 
-  const getTypeIcon = () => {
-    switch (type) {
-      case "success":
-        return "✅";
+  const getCategoryColor = () => {
+    switch (category) {
+      case "donation":
+        return "#2563EB";
 
-      case "warning":
-        return "⚠️";
+      case "expense":
+        return "#DC2626";
 
       default:
-        return "ℹ️";
+        return "#64748B";
+    }
+  };
+
+  const getCategoryLabel = () => {
+    switch (category) {
+      case "donation":
+        return "DONASI";
+
+      case "expense":
+        return "PENGELUARAN";
+
+      default:
+        return "SISTEM";
     }
   };
 
   return (
-    <View style={styles.card}>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.card,
+        !isRead && styles.unreadCard,
+        pressed && styles.pressedCard,
+      ]}
+    >
       <View style={styles.header}>
-        <View
-          style={[
-            styles.badge,
-            {
-              backgroundColor: getTypeColor(),
-            },
-          ]}
-        >
-          <Text style={styles.badgeText}>
-            {getTypeIcon()} {getTypeLabel()}
-          </Text>
+        <View style={styles.badgeContainer}>
+          <View
+            style={[
+              styles.categoryBadge,
+              {
+                backgroundColor: getCategoryColor(),
+              },
+            ]}
+          >
+            <Text style={styles.badgeText}>{getCategoryLabel()}</Text>
+          </View>
+
+          <View
+            style={[
+              styles.typeBadge,
+              {
+                backgroundColor: getTypeColor(),
+              },
+            ]}
+          >
+            <Text style={styles.badgeText}>{getTypeLabel()}</Text>
+          </View>
         </View>
 
         <Text style={styles.date}>{createdAt}</Text>
@@ -74,7 +111,17 @@ export default function NotificationCard({
       <Text style={styles.title}>{title}</Text>
 
       <Text style={styles.message}>{message}</Text>
-    </View>
+
+      {!isRead && (
+        <View style={styles.unreadContainer}>
+          <View style={styles.unreadDot} />
+
+          <Text style={styles.unreadText}>
+            Ketuk untuk menandai sudah dibaca
+          </Text>
+        </View>
+      )}
+    </Pressable>
   );
 }
 
@@ -97,17 +144,43 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
+  pressedCard: {
+    opacity: 0.8,
+  },
+
+  unreadCard: {
+    borderLeftWidth: 4,
+
+    borderLeftColor: "#2563EB",
+  },
+
   header: {
     flexDirection: "row",
 
     justifyContent: "space-between",
 
-    alignItems: "center",
+    alignItems: "flex-start",
 
     marginBottom: 12,
   },
 
-  badge: {
+  badgeContainer: {
+    flexDirection: "row",
+
+    flexWrap: "wrap",
+
+    gap: 6,
+  },
+
+  categoryBadge: {
+    paddingHorizontal: 10,
+
+    paddingVertical: 5,
+
+    borderRadius: 999,
+  },
+
+  typeBadge: {
     paddingHorizontal: 10,
 
     paddingVertical: 5,
@@ -118,7 +191,7 @@ const styles = StyleSheet.create({
   badgeText: {
     color: "#FFFFFF",
 
-    fontSize: 11,
+    fontSize: 10,
 
     fontWeight: "700",
   },
@@ -143,5 +216,33 @@ const styles = StyleSheet.create({
     color: "#64748B",
 
     lineHeight: 22,
+  },
+
+  unreadContainer: {
+    flexDirection: "row",
+
+    alignItems: "center",
+
+    marginTop: 12,
+  },
+
+  unreadDot: {
+    width: 8,
+
+    height: 8,
+
+    borderRadius: 4,
+
+    backgroundColor: "#2563EB",
+
+    marginRight: 6,
+  },
+
+  unreadText: {
+    fontSize: 12,
+
+    color: "#2563EB",
+
+    fontWeight: "600",
   },
 });

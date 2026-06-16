@@ -11,6 +11,8 @@ import { useState } from "react";
 
 import { router } from "expo-router";
 
+import AppHeader from "@/components/common/AppHeader";
+
 import DonationCard from "@/components/donations/DonationCard";
 
 import { useDonations } from "@/features/donations/useDonations";
@@ -47,11 +49,10 @@ export default function DonationsScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Daftar Donasi</Text>
-
-      <Text style={styles.subtitle}>
-        Seluruh donasi yang tercatat pada sistem.
-      </Text>
+      <AppHeader
+        title="Donasi"
+        subtitle="Kelola dan pantau seluruh data donasi."
+      />
 
       <View style={styles.summaryContainer}>
         <View style={styles.summaryCard}>
@@ -93,9 +94,7 @@ export default function DonationsScreen() {
           refreshing={refreshing}
           onRefresh={handleRefresh}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: 24,
-          }}
+          contentContainerStyle={styles.listContainer}
         />
       ) : (
         <View style={styles.emptyContainer}>
@@ -121,18 +120,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  header: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#0F172A",
-  },
-
-  subtitle: {
-    marginTop: 4,
-    marginBottom: 20,
-    color: "#64748B",
   },
 
   summaryContainer: {
@@ -193,6 +180,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
 
     fontSize: 16,
+  },
+
+  listContainer: {
+    paddingBottom: 24,
   },
 
   emptyContainer: {

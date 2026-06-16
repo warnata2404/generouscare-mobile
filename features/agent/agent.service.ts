@@ -1,18 +1,21 @@
 import { supabase } from "@/lib/supabase";
 
 import { AGENT_RULES } from "./rules";
+import { AgentInsight } from "./types";
 
 export const agentService = {
-  async evaluate() {
+  async evaluate(): Promise<AgentInsight[]> {
     const { data: authData } = await supabase.auth.getUser();
 
     if (!authData.user) {
-      return;
+      return [];
     }
+
+    const insights: AgentInsight[] = [];
 
     const { data: donations } = await supabase
       .from("donations")
-      .select("amount");
+      .select("amount, category");
 
     const { data: expenses } = await supabase
       .from("expenses")
@@ -27,74 +30,99 @@ export const agentService = {
     const remainingFunds = totalDonations - totalExpenses;
 
     if (remainingFunds < AGENT_RULES.LOW_FUNDS) {
-      await this.createNotification(
-        "Peringatan Dana Menipis",
-        "Dana tersisa berada di bawah batas aman.",
-        "warning",
-      );
+      insights.push({
+        title: "Peringatan Dana Menipis",
+        message: "Dana tersisa berada di bawah batas aman.",
+        type: "warning",
+      });
     }
 
-    if (remainingFunds > AGENT_RULES.HIGH_FUNDS) {
-      await this.createNotification(
-        "Dana Siap Disalurkan",
-        "Dana cukup untuk membuka program bantuan baru.",
-        "success",
-      );
+    if (remainingFunds > AGENT_RULES.HEALTHY_FUNDS) {
+      insights.push({
+        title: "Kondisi Dana Sehat",
+        message: "Saldo dana berada pada kondisi aman dan siap disalurkan.",
+        type: "success",
+      });
     }
 
-    const educationExpense =
-      expenses
-        ?.filter((item) => item.category === "Pendidikan")
-        .reduce((sum, item) => sum + Number(item.amount), 0) ?? 0;
+    const categories = [
+      "Pendidikan",
+      "Kesehatan",
+      "Bencana Alam",
+      "Kemanusiaan",
+    ];
 
-    const educationPercentage =
-      totalExpenses > 0
-        ? Math.round((educationExpense / totalExpenses) * 100)
-        : 0;
+    const donationByCategory = categories.map((category) => {
+      const total =
+        donations
+          ?.filter((item) => item.category === category)
+          .reduce((sum, item) => sum + Number(item.amount), 0) ?? 0;
 
-    if (educationPercentage > AGENT_RULES.EDUCATION_PERCENTAGE) {
-      await this.createNotification(
-        "Fokus Pendidikan",
-        "Sebagian besar dana digunakan untuk pendidikan.",
-        "info",
-      );
-    }
-  },
-
-  async createNotification(title: string, message: string, type: string) {
-    const { data: userData } = await supabase.auth.getUser();
-
-    if (!userData.user) {
-      return;
-    }
-
-    const { data: existing, error: existingError } = await supabase
-      .from("notifications")
-      .select("id")
-      .eq("user_id", userData.user.id)
-      .eq("title", title)
-      .limit(1);
-
-    if (existingError) {
-      console.log("Agent Notification Check Error:", existingError);
-
-      return;
-    }
-
-    if (existing && existing.length > 0) {
-      return;
-    }
-
-    const { error } = await supabase.from("notifications").insert({
-      user_id: userData.user.id,
-      title,
-      message,
-      type,
-      is_read: false,
+      return {
+        category,
+        total,
+      };
     });
 
-    if (error) {
-      console.log("Agent Notification Error:", error);
+    const highestDonationCategory = [...donationByCategory].sort(
+      (a, b) => b.total - a.total,
+    )[0];
+
+    if (highestDonationCategory && highestDonationCategory.total > 0) {
+      insights.push({
+        title: "Kategori Donasi Terbesar",
+        message: `${highestDonationCategory.category} menerima donasi terbesar sebesar Rp${highestDonationCategory.total.toLocaleString(
+          "id-ID",
+        )}.`,
+        type: "info",
+      });
     }
+
+    const lowestDonationCategory = donationByCategory
+      .filter((item) => item.total > 0)
+      .sort((a, b) => a.total - b.total)[0];
+
+    if (
+      lowestDonationCategory &&
+      lowestDonationCategory.total < AGENT_RULES.LOW_CATEGORY_DONATION
+    ) {
+      insights.push({
+        title: "Kategori Perlu Perhatian",
+        message: `${lowestDonationCategory.category} memiliki donasi yang masih rendah.`,
+        type: "warning",
+      });
+    }
+
+    if (totalExpenses > 0) {
+      const expenseByCategory = categories.map((category) => {
+        const total =
+          expenses
+            ?.filter((item) => item.category === category)
+            .reduce((sum, item) => sum + Number(item.amount), 0) ?? 0;
+
+        return {
+          category,
+          total,
+        };
+      });
+
+      const dominantCategory = [...expenseByCategory].sort(
+        (a, b) => b.total - a.total,
+      )[0];
+
+      const dominantPercentage = dominantCategory
+        ? Math.round((dominantCategory.total / totalExpenses) * 100)
+        : 0;
+
+      if (dominantPercentage > AGENT_RULES.CATEGORY_DOMINANCE_PERCENTAGE) {
+        insights.push({
+          title: "Distribusi Dana Tidak Merata",
+          message: `${dominantPercentage}% pengeluaran terfokus pada kategori ${dominantCategory.category}.`,
+          type: "info",
+        });
+      }
+    }
+
+    return insights;
   },
 };
