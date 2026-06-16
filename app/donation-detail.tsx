@@ -32,6 +32,8 @@ export default function DonationDetailScreen() {
       const result = await donationService.getById(String(id));
 
       setDonation(result);
+    } catch (error) {
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -54,7 +56,7 @@ export default function DonationDetailScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.header}>Detail Donasi</Text>
 
       <DonationDetailCard donation={donation} />

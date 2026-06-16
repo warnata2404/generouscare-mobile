@@ -30,4 +30,6 @@ export interface CreateDonationPayload {
   longitude?: number;
 
   photo_url?: string;
+
+  imageUri?: string;
 }

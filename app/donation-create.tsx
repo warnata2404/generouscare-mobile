@@ -13,6 +13,7 @@ export default function DonationCreateScreen() {
     note: string,
     latitude?: number,
     longitude?: number,
+    imageUri?: string,
   ) => {
     try {
       await donationService.create({
@@ -21,6 +22,7 @@ export default function DonationCreateScreen() {
         note,
         latitude,
         longitude,
+        imageUri,
       });
 
       Alert.alert("Berhasil", "Donasi berhasil ditambahkan.");
@@ -29,7 +31,7 @@ export default function DonationCreateScreen() {
     } catch (error: any) {
       Alert.alert(
         "Gagal",
-        error.message || "Terjadi kesalahan saat menyimpan donasi.",
+        error?.message || "Terjadi kesalahan saat menyimpan donasi.",
       );
     }
   };

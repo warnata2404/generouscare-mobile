@@ -64,11 +64,15 @@ export default function DonationsScreen() {
               category={item.category}
               note={item.note}
               createdAt={item.created_at}
+              photoUrl={item.photo_url}
             />
           )}
           showsVerticalScrollIndicator={false}
           refreshing={refreshing}
           onRefresh={handleRefresh}
+          contentContainerStyle={{
+            paddingBottom: 24,
+          }}
         />
       ) : (
         <View style={styles.emptyContainer}>

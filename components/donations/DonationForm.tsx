@@ -3,6 +3,7 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -10,6 +11,7 @@ import {
   View,
 } from "react-native";
 
+import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 
 interface DonationFormProps {
@@ -19,6 +21,7 @@ interface DonationFormProps {
     note: string,
     latitude?: number,
     longitude?: number,
+    imageUri?: string,
   ) => Promise<void>;
 }
 
@@ -32,6 +35,8 @@ export default function DonationForm({ onSubmit }: DonationFormProps) {
   const [latitude, setLatitude] = useState<number | undefined>();
 
   const [longitude, setLongitude] = useState<number | undefined>();
+
+  const [imageUri, setImageUri] = useState<string | undefined>();
 
   const [loading, setLoading] = useState(false);
 
@@ -59,6 +64,31 @@ export default function DonationForm({ onSubmit }: DonationFormProps) {
     }
   };
 
+  const handlePickImage = async () => {
+    try {
+      const permission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (!permission.granted) {
+        Alert.alert("Izin Ditolak", "Aplikasi memerlukan akses galeri.");
+
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        quality: 0.7,
+      });
+
+      if (!result.canceled) {
+        setImageUri(result.assets[0].uri);
+      }
+    } catch {
+      Alert.alert("Gagal", "Tidak dapat memilih gambar.");
+    }
+  };
+
   const handleSubmit = async () => {
     if (!amount || !category || !note) {
       Alert.alert("Validasi", "Semua field wajib diisi.");
@@ -69,7 +99,14 @@ export default function DonationForm({ onSubmit }: DonationFormProps) {
     try {
       setLoading(true);
 
-      await onSubmit(Number(amount), category, note, latitude, longitude);
+      await onSubmit(
+        Number(amount),
+        category,
+        note,
+        latitude,
+        longitude,
+        imageUri,
+      );
 
       setAmount("");
       setCategory("");
@@ -78,9 +115,11 @@ export default function DonationForm({ onSubmit }: DonationFormProps) {
       setLatitude(undefined);
       setLongitude(undefined);
 
+      setImageUri(undefined);
+
       Alert.alert("Berhasil", "Donasi berhasil ditambahkan.");
     } catch (error: any) {
-      Alert.alert("Gagal", error.message);
+      Alert.alert("Gagal", error?.message || "Terjadi kesalahan.");
     } finally {
       setLoading(false);
     }
@@ -123,6 +162,14 @@ export default function DonationForm({ onSubmit }: DonationFormProps) {
 
           <Text style={styles.locationText}>Longitude: {longitude}</Text>
         </View>
+      )}
+
+      <TouchableOpacity style={styles.photoButton} onPress={handlePickImage}>
+        <Text style={styles.photoButtonText}>Pilih Foto Donasi</Text>
+      </TouchableOpacity>
+
+      {imageUri && (
+        <Image source={{ uri: imageUri }} style={styles.previewImage} />
       )}
 
       <TouchableOpacity
@@ -173,6 +220,26 @@ const styles = StyleSheet.create({
   locationText: {
     color: "#1E3A8A",
     marginBottom: 4,
+  },
+
+  photoButton: {
+    backgroundColor: "#7C3AED",
+    padding: 14,
+    borderRadius: 16,
+    alignItems: "center",
+    marginBottom: 12,
+  },
+
+  photoButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+  },
+
+  previewImage: {
+    width: "100%",
+    height: 220,
+    borderRadius: 16,
+    marginBottom: 12,
   },
 
   button: {
