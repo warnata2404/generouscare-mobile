@@ -2,13 +2,18 @@ import { useState } from "react";
 
 import {
   ActivityIndicator,
-  Alert,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { router } from "expo-router";
 
@@ -22,10 +27,17 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isFocusedEmail, setIsFocusedEmail] = useState(false);
+  const [isFocusedPassword, setIsFocusedPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert("Validasi", "Email dan Password wajib diisi.");
+      Toast.show({
+        type: "error",
+        text1: "Validasi",
+        text2: "Email dan Password wajib diisi.",
+      });
 
       return;
     }
@@ -38,36 +50,68 @@ export default function LoginScreen() {
         password,
       });
 
-      Alert.alert("Berhasil", "Login berhasil.");
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Login berhasil.",
+      });
 
       router.replace("/dashboard");
     } catch (error: any) {
-      Alert.alert("Login Gagal", error.message);
+      Toast.show({
+        type: "error",
+        text1: "Login Gagal",
+        text2: error.message,
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.title}>Login</Text>
 
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            style={[styles.input, isFocusedEmail && styles.inputFocused]}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            onFocus={() => setIsFocusedEmail(true)}
+            onBlur={() => setIsFocusedEmail(false)}
+          />
 
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        style={styles.input}
-        secureTextEntry
-      />
+          <View style={[styles.passwordContainer, isFocusedPassword && styles.inputFocused]}>
+            <TextInput
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              style={styles.passwordInput}
+              secureTextEntry={!showPassword}
+              onFocus={() => setIsFocusedPassword(true)}
+              onBlur={() => setIsFocusedPassword(false)}
+            />
+            <TouchableOpacity
+              style={styles.eyeIcon}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <MaterialCommunityIcons
+                name={showPassword ? "eye-off" : "eye"}
+                size={24}
+                color="#64748B"
+              />
+            </TouchableOpacity>
+          </View>
 
       <TouchableOpacity
         style={styles.button}
@@ -84,7 +128,9 @@ export default function LoginScreen() {
       <TouchableOpacity onPress={() => router.push("/register")}>
         <Text style={styles.link}>Belum punya akun? Register</Text>
       </TouchableOpacity>
-    </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -102,6 +148,11 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
 
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+
   input: {
     borderWidth: 1,
     borderColor: "#E2E8F0",
@@ -109,6 +160,29 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     backgroundColor: "#FFFFFF",
+  },
+
+  inputFocused: {
+    borderColor: "#2563EB",
+  },
+
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    marginBottom: 12,
+  },
+
+  passwordInput: {
+    flex: 1,
+    padding: 16,
+  },
+
+  eyeIcon: {
+    padding: 16,
   },
 
   button: {
