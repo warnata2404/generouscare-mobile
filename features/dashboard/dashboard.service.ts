@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import {
   ActivityItem,
   AgentRecommendation,
+  CategoryChartData,
   DashboardStats,
   MonthlyChartData,
 } from "./types";
@@ -40,11 +41,8 @@ export const dashboardService = {
 
     return {
       totalDonations,
-
       totalExpenses,
-
       remainingFunds,
-
       distributionRate,
     };
   },
@@ -99,10 +97,66 @@ export const dashboardService = {
 
     return {
       labels,
-
       donations: donationsPerMonth,
-
       expenses: expensesPerMonth,
+    };
+  },
+
+  async getDonationCategoryChart(): Promise<CategoryChartData> {
+    const { data, error } = await supabase
+      .from("donations")
+      .select("amount, category");
+
+    if (error) {
+      throw error;
+    }
+
+    const categories = [
+      "Pendidikan",
+      "Kesehatan",
+      "Bencana Alam",
+      "Kemanusiaan",
+    ];
+
+    const values = categories.map(
+      (category) =>
+        data
+          ?.filter((item) => item.category === category)
+          .reduce((sum, item) => sum + Number(item.amount), 0) ?? 0,
+    );
+
+    return {
+      labels: categories,
+      values,
+    };
+  },
+
+  async getExpenseCategoryChart(): Promise<CategoryChartData> {
+    const { data, error } = await supabase
+      .from("expenses")
+      .select("amount, category");
+
+    if (error) {
+      throw error;
+    }
+
+    const categories = [
+      "Pendidikan",
+      "Kesehatan",
+      "Bencana Alam",
+      "Kemanusiaan",
+    ];
+
+    const values = categories.map(
+      (category) =>
+        data
+          ?.filter((item) => item.category === category)
+          .reduce((sum, item) => sum + Number(item.amount), 0) ?? 0,
+    );
+
+    return {
+      labels: categories,
+      values,
     };
   },
 

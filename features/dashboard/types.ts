@@ -31,3 +31,9 @@ export interface MonthlyChartData {
 
   expenses: number[];
 }
+
+export interface CategoryChartData {
+  labels: string[];
+
+  values: number[];
+}

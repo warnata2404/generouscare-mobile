@@ -7,5 +7,9 @@ export interface NotificationItem {
 
   type: "info" | "success" | "warning";
 
+  category: "donation" | "expense" | "system";
+
+  isRead: boolean;
+
   createdAt: string;
 }

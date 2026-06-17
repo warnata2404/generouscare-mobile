@@ -7,6 +7,7 @@ import { dashboardService } from "./dashboard.service";
 import {
   ActivityItem,
   AgentRecommendation,
+  CategoryChartData,
   DashboardStats,
   MonthlyChartData,
 } from "./types";
@@ -21,17 +22,31 @@ export function useDashboard() {
 
   const [chartData, setChartData] = useState<MonthlyChartData | null>(null);
 
+  const [donationCategoryChart, setDonationCategoryChart] =
+    useState<CategoryChartData | null>(null);
+
+  const [expenseCategoryChart, setExpenseCategoryChart] =
+    useState<CategoryChartData | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   const loadDashboard = useCallback(async () => {
     try {
-      const [statsData, recommendationData, activitiesData, chartDataResult] =
-        await Promise.all([
-          dashboardService.getStats(),
-          dashboardService.getRecommendation(),
-          dashboardService.getActivities(),
-          dashboardService.getMonthlyChartData(),
-        ]);
+      const [
+        statsData,
+        recommendationData,
+        activitiesData,
+        chartDataResult,
+        donationCategoryData,
+        expenseCategoryData,
+      ] = await Promise.all([
+        dashboardService.getStats(),
+        dashboardService.getRecommendation(),
+        dashboardService.getActivities(),
+        dashboardService.getMonthlyChartData(),
+        dashboardService.getDonationCategoryChart(),
+        dashboardService.getExpenseCategoryChart(),
+      ]);
 
       setStats(statsData);
 
@@ -40,6 +55,10 @@ export function useDashboard() {
       setActivities(activitiesData);
 
       setChartData(chartDataResult);
+
+      setDonationCategoryChart(donationCategoryData);
+
+      setExpenseCategoryChart(expenseCategoryData);
     } catch (error) {
       console.error("LOAD DASHBOARD ERROR:", error);
     } finally {
@@ -89,6 +108,8 @@ export function useDashboard() {
     recommendation,
     activities,
     chartData,
+    donationCategoryChart,
+    expenseCategoryChart,
     loading,
 
     refreshDashboard: loadDashboard,

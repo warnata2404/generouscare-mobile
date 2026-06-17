@@ -13,11 +13,17 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: "#94A3B8",
 
         tabBarStyle: {
-          height: 65,
-
-          paddingBottom: 8,
+          height: 70,
 
           paddingTop: 8,
+
+          paddingBottom: 8,
+        },
+
+        tabBarLabelStyle: {
+          fontSize: 12,
+
+          fontWeight: "600",
         },
       }}
     >
@@ -67,15 +73,45 @@ export default function TabsLayout() {
       />
 
 
+<<<<<<< HEAD
+=======
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="chart-line"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="agent"
+        options={{
+          title: "Agent",
+
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="robot-outline"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+>>>>>>> origin/main
+
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          href: null,
+        }}
+      />
 
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profil",
-
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" color={color} size={size} />
-          ),
+          href: null,
         }}
       />
     </Tabs>

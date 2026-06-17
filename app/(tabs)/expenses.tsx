@@ -12,9 +12,14 @@ import { useState } from "react";
 
 import { router } from "expo-router";
 
+import AppHeader from "@/components/common/AppHeader";
+import ScreenContainer from "@/components/common/ScreenContainer";
+
 import ExpenseCard from "@/components/expenses/ExpenseCard";
 
 import { useExpenses } from "@/features/expenses/useExpenses";
+
+import { formatRupiah } from "@/lib/currency";
 
 export default function ExpensesScreen() {
   const { expenses, loading, refresh } = useExpenses();
@@ -38,13 +43,16 @@ export default function ExpensesScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
+      <ScreenContainer>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      </ScreenContainer>
     );
   }
 
   return (
+<<<<<<< HEAD
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
       <View style={styles.container}>
       <Text style={styles.header}>Daftar Pengeluaran</Text>
@@ -94,18 +102,75 @@ export default function ExpensesScreen() {
           refreshing={refreshing}
           onRefresh={handleRefresh}
           showsVerticalScrollIndicator={false}
+=======
+    <ScreenContainer>
+      <View style={styles.container}>
+        <AppHeader
+          title="Pengeluaran"
+          subtitle="Kelola dan pantau seluruh data pengeluaran."
+>>>>>>> origin/main
         />
-      ) : (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyTitle}>Belum Ada Pengeluaran</Text>
 
-          <Text style={styles.emptyText}>
-            Tambahkan data pengeluaran pertama.
-          </Text>
+        <View style={styles.summaryCard}>
+          <View>
+            <Text style={styles.summaryLabel}>Total Pengeluaran</Text>
+
+            <Text style={styles.summaryAmount}>
+              {formatRupiah(totalExpense)}
+            </Text>
+          </View>
+
+          <View style={styles.summaryDivider} />
+
+          <View>
+            <Text style={styles.summaryLabel}>Transaksi</Text>
+
+            <Text style={styles.summaryCount}>{expenses.length}</Text>
+          </View>
         </View>
+<<<<<<< HEAD
       )}
       </View>
     </SafeAreaView>
+=======
+
+        <TouchableOpacity
+          style={styles.createButton}
+          onPress={() => router.push("/expense-create")}
+        >
+          <Text style={styles.createButtonText}>Tambah Pengeluaran</Text>
+        </TouchableOpacity>
+
+        {expenses.length > 0 ? (
+          <FlatList
+            data={expenses}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <ExpenseCard
+                id={item.id}
+                category={item.category}
+                amount={item.amount}
+                description={item.description}
+                createdAt={item.created_at}
+              />
+            )}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContainer}
+          />
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyTitle}>Belum Ada Pengeluaran</Text>
+
+            <Text style={styles.emptyText}>
+              Tambahkan data pengeluaran pertama.
+            </Text>
+          </View>
+        )}
+      </View>
+    </ScreenContainer>
+>>>>>>> origin/main
   );
 }
 
@@ -113,25 +178,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
-    padding: 16,
+    paddingHorizontal: 16,
   },
 
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  header: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#0F172A",
-  },
-
-  subtitle: {
-    marginTop: 4,
-    marginBottom: 20,
-    color: "#64748B",
   },
 
   summaryCard: {
@@ -208,6 +261,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
 
     fontSize: 16,
+  },
+
+  listContainer: {
+    paddingBottom: 32,
   },
 
   emptyContainer: {

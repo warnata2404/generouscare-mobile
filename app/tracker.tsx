@@ -10,6 +10,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useState } from "react";
 
+import AppHeader from "@/components/common/AppHeader";
+import ScreenContainer from "@/components/common/ScreenContainer";
+
 import { useTracker } from "@/features/tracker/useTracker";
 
 import { formatRupiah } from "@/lib/currency";
@@ -50,13 +53,16 @@ export default function TrackerScreen() {
 
   if (loading || !summary) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
+      <ScreenContainer>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      </ScreenContainer>
     );
   }
 
   return (
+<<<<<<< HEAD:app/tracker.tsx
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
       <ScrollView
         style={styles.container}
@@ -66,120 +72,137 @@ export default function TrackerScreen() {
       showsVerticalScrollIndicator={false}
     >
       <Text style={styles.header}>Tracker Dana</Text>
+=======
+    <ScreenContainer>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+        showsVerticalScrollIndicator={false}
+      >
+        <AppHeader
+          title="Tracker Dana"
+          subtitle="Monitoring transparansi pengelolaan dana donasi."
+        />
+>>>>>>> origin/main:app/(tabs)/tracker.tsx
 
-      <Text style={styles.subtitle}>
-        Monitoring transparansi pengelolaan dana donasi.
-      </Text>
+        <View style={styles.mainSummaryCard}>
+          <Text style={styles.summaryLabel}>Dana Terkumpul</Text>
 
-      <View style={styles.mainSummaryCard}>
-        <Text style={styles.summaryLabel}>Dana Terkumpul</Text>
-
-        <Text style={styles.mainSummaryValue}>
-          {formatRupiah(summary.totalDonations)}
-        </Text>
-      </View>
-
-      <View style={styles.smallSummaryContainer}>
-        <View style={styles.smallSummaryCard}>
-          <Text style={styles.summaryLabel}>Tersalurkan</Text>
-
-          <Text style={styles.smallSummaryValue}>
-            {formatRupiah(summary.totalExpenses)}
+          <Text style={styles.mainSummaryValue}>
+            {formatRupiah(summary.totalDonations)}
           </Text>
         </View>
 
-        <View style={styles.smallSummaryCard}>
-          <Text style={styles.summaryLabel}>Saldo Dana</Text>
+        <View style={styles.smallSummaryContainer}>
+          <View style={styles.smallSummaryCard}>
+            <Text style={styles.summaryLabel}>Tersalurkan</Text>
 
-          <Text style={styles.smallSummaryValue}>
-            {formatRupiah(summary.remainingBalance)}
-          </Text>
-        </View>
-      </View>
-
-      <Text style={styles.sectionTitle}>Progress Penyaluran Dana</Text>
-
-      <View style={styles.progressCard}>
-        <View style={styles.progressBarBackground}>
-          <View
-            style={[
-              styles.progressBarFill,
-              {
-                width: `${Math.min(summary.distributionPercentage, 100)}%`,
-              },
-            ]}
-          />
-        </View>
-
-        <Text style={styles.progressText}>
-          {summary.distributionPercentage}% Dana Tersalurkan
-        </Text>
-
-        <Text style={styles.progressDescription}>
-          {formatRupiah(summary.totalExpenses)}
-          {" dari "}
-          {formatRupiah(summary.totalDonations)}
-        </Text>
-      </View>
-
-      <Text style={styles.sectionTitle}>Tracker Per Kategori</Text>
-
-      {categories.map((item) => (
-        <View key={item.category} style={styles.categoryCard}>
-          <View style={styles.categoryHeader}>
-            <Text
-              style={[
-                styles.categoryTitle,
-                {
-                  color: getCategoryColor(item.category),
-                },
-              ]}
-            >
-              {item.category}
+            <Text style={styles.smallSummaryValue}>
+              {formatRupiah(summary.totalExpenses)}
             </Text>
-
-            <Text style={styles.categoryPercentage}>{item.percentage}%</Text>
           </View>
 
-          <View style={styles.categoryProgressBackground}>
+          <View style={styles.smallSummaryCard}>
+            <Text style={styles.summaryLabel}>Saldo Dana</Text>
+
+            <Text style={styles.smallSummaryValue}>
+              {formatRupiah(summary.remainingBalance)}
+            </Text>
+          </View>
+        </View>
+
+        <Text style={styles.sectionTitle}>Progress Penyaluran Dana</Text>
+
+        <View style={styles.progressCard}>
+          <View style={styles.progressBarBackground}>
             <View
               style={[
-                styles.categoryProgressFill,
+                styles.progressBarFill,
                 {
-                  width: `${Math.min(item.percentage, 100)}%`,
-                  backgroundColor: getCategoryColor(item.category),
+                  width: `${Math.min(summary.distributionPercentage, 100)}%`,
                 },
               ]}
             />
           </View>
 
-          <View style={styles.categoryInfoRow}>
-            <Text style={styles.categoryInfo}>Donasi</Text>
+          <Text style={styles.progressText}>
+            {summary.distributionPercentage}% Dana Tersalurkan
+          </Text>
 
-            <Text style={styles.categoryInfoValue}>
-              {formatRupiah(item.donationAmount)}
-            </Text>
-          </View>
-
-          <View style={styles.categoryInfoRow}>
-            <Text style={styles.categoryInfo}>Tersalurkan</Text>
-
-            <Text style={styles.categoryInfoValue}>
-              {formatRupiah(item.expenseAmount)}
-            </Text>
-          </View>
-
-          <View style={styles.categoryInfoRow}>
-            <Text style={styles.categoryInfo}>Saldo</Text>
-
-            <Text style={styles.categoryInfoValue}>
-              {formatRupiah(item.remainingAmount)}
-            </Text>
-          </View>
+          <Text style={styles.progressDescription}>
+            {formatRupiah(summary.totalExpenses)}
+            {" dari "}
+            {formatRupiah(summary.totalDonations)}
+          </Text>
         </View>
+<<<<<<< HEAD:app/tracker.tsx
       ))}
       </ScrollView>
     </SafeAreaView>
+=======
+
+        <Text style={styles.sectionTitle}>Tracker Per Kategori</Text>
+
+        {categories.map((item) => (
+          <View key={item.category} style={styles.categoryCard}>
+            <View style={styles.categoryHeader}>
+              <Text
+                style={[
+                  styles.categoryTitle,
+                  {
+                    color: getCategoryColor(item.category),
+                  },
+                ]}
+              >
+                {item.category}
+              </Text>
+
+              <Text style={styles.categoryPercentage}>{item.percentage}%</Text>
+            </View>
+
+            <View style={styles.categoryProgressBackground}>
+              <View
+                style={[
+                  styles.categoryProgressFill,
+                  {
+                    width: `${Math.min(item.percentage, 100)}%`,
+                    backgroundColor: getCategoryColor(item.category),
+                  },
+                ]}
+              />
+            </View>
+
+            <View style={styles.categoryInfoRow}>
+              <Text style={styles.categoryInfo}>Donasi</Text>
+
+              <Text style={styles.categoryInfoValue}>
+                {formatRupiah(item.donationAmount)}
+              </Text>
+            </View>
+
+            <View style={styles.categoryInfoRow}>
+              <Text style={styles.categoryInfo}>Tersalurkan</Text>
+
+              <Text style={styles.categoryInfoValue}>
+                {formatRupiah(item.expenseAmount)}
+              </Text>
+            </View>
+
+            <View style={styles.categoryInfoRow}>
+              <Text style={styles.categoryInfo}>Saldo</Text>
+
+              <Text style={styles.categoryInfoValue}>
+                {formatRupiah(item.remainingAmount)}
+              </Text>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+    </ScreenContainer>
+>>>>>>> origin/main:app/(tabs)/tracker.tsx
   );
 }
 
@@ -187,25 +210,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
-    padding: 16,
+  },
+
+  contentContainer: {
+    paddingTop: 0,
+    paddingHorizontal: 16,
+    paddingBottom: 32,
   },
 
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  header: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#0F172A",
-  },
-
-  subtitle: {
-    marginTop: 4,
-    marginBottom: 20,
-    color: "#64748B",
   },
 
   mainSummaryCard: {
@@ -279,13 +295,15 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
+    marginTop: 8,
+
+    marginBottom: 12,
+
     fontSize: 18,
 
     fontWeight: "700",
 
     color: "#0F172A",
-
-    marginBottom: 12,
   },
 
   progressCard: {
@@ -296,6 +314,14 @@ const styles = StyleSheet.create({
     padding: 18,
 
     marginBottom: 20,
+
+    shadowColor: "#000",
+
+    shadowOpacity: 0.05,
+
+    shadowRadius: 8,
+
+    elevation: 3,
   },
 
   progressBarBackground: {

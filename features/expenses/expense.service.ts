@@ -1,5 +1,7 @@
 import { supabase } from "@/lib/supabase";
 
+import { createNotification } from "@/features/notifications/notification-helper";
+
 import {
   CreateExpensePayload,
   Expense,
@@ -47,6 +49,15 @@ export const expenseService = {
     if (error) {
       throw error;
     }
+
+    await createNotification(
+      "Pengeluaran Baru",
+      `Pengeluaran kategori ${payload.category} sebesar Rp${payload.amount.toLocaleString(
+        "id-ID",
+      )} berhasil dicatat.`,
+      "success",
+      "expense",
+    );
   },
 
   async update(id: string, payload: UpdateExpensePayload): Promise<Expense> {
@@ -68,10 +79,23 @@ export const expenseService = {
       throw error;
     }
 
+    await createNotification(
+      "Pengeluaran Diperbarui",
+      `Data pengeluaran kategori ${payload.category} berhasil diperbarui.`,
+      "info",
+      "expense",
+    );
+
     return data;
   },
 
   async delete(id: string): Promise<void> {
+    const expense = await this.getById(id);
+
+    if (!expense) {
+      throw new Error("Pengeluaran tidak ditemukan");
+    }
+
     const { data, error } = await supabase
       .from("expenses")
       .delete()
@@ -84,6 +108,13 @@ export const expenseService = {
     if (error) {
       throw error;
     }
+
+    await createNotification(
+      "Pengeluaran Dihapus",
+      `Data pengeluaran kategori ${expense.category} berhasil dihapus.`,
+      "info",
+      "expense",
+    );
   },
 
   async getCategoryStatistics(): Promise<ExpenseCategory[]> {

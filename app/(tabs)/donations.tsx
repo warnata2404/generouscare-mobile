@@ -12,6 +12,9 @@ import { useState } from "react";
 
 import { router } from "expo-router";
 
+import AppHeader from "@/components/common/AppHeader";
+import ScreenContainer from "@/components/common/ScreenContainer";
+
 import DonationCard from "@/components/donations/DonationCard";
 
 import { useDonations } from "@/features/donations/useDonations";
@@ -40,13 +43,16 @@ export default function DonationsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
+      <ScreenContainer>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      </ScreenContainer>
     );
   }
 
   return (
+<<<<<<< HEAD
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
       <View style={styles.container}>
       <Text style={styles.header}>Daftar Donasi</Text>
@@ -98,18 +104,74 @@ export default function DonationsScreen() {
           contentContainerStyle={{
             paddingBottom: 24,
           }}
+=======
+    <ScreenContainer>
+      <View style={styles.container}>
+        <AppHeader
+          title="Donasi"
+          subtitle="Kelola dan pantau seluruh data donasi."
+>>>>>>> origin/main
         />
-      ) : (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyTitle}>Belum Ada Donasi</Text>
 
-          <Text style={styles.emptyText}>
-            Tambahkan data donasi pertama Anda.
-          </Text>
+        <View style={styles.summaryContainer}>
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Total Donasi</Text>
+
+            <Text style={styles.summaryValue}>
+              {formatRupiah(totalDonations)}
+            </Text>
+          </View>
+
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Jumlah Transaksi</Text>
+
+            <Text style={styles.summaryValue}>{donations.length}</Text>
+          </View>
         </View>
+<<<<<<< HEAD
       )}
       </View>
     </SafeAreaView>
+=======
+
+        <TouchableOpacity
+          style={styles.createButton}
+          onPress={() => router.push("/donation-create")}
+        >
+          <Text style={styles.createButtonText}>Tambah Donasi</Text>
+        </TouchableOpacity>
+
+        {donations.length > 0 ? (
+          <FlatList
+            data={donations}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <DonationCard
+                id={item.id}
+                amount={item.amount}
+                category={item.category}
+                note={item.note}
+                createdAt={item.created_at}
+                photoUrl={item.photo_url}
+              />
+            )}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContainer}
+          />
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyTitle}>Belum Ada Donasi</Text>
+
+            <Text style={styles.emptyText}>
+              Tambahkan data donasi pertama Anda.
+            </Text>
+          </View>
+        )}
+      </View>
+    </ScreenContainer>
+>>>>>>> origin/main
   );
 }
 
@@ -117,25 +179,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
-    padding: 16,
+    paddingHorizontal: 16,
   },
 
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  header: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#0F172A",
-  },
-
-  subtitle: {
-    marginTop: 4,
-    marginBottom: 20,
-    color: "#64748B",
   },
 
   summaryContainer: {
@@ -196,6 +246,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
 
     fontSize: 16,
+  },
+
+  listContainer: {
+    paddingBottom: 32,
   },
 
   emptyContainer: {
