@@ -9,7 +9,11 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 import { LineChart } from "react-native-chart-kit";
 
@@ -92,6 +96,60 @@ export default function DashboardScreen() {
   }
 
   return (
+<<<<<<< HEAD
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
+      <ScrollView
+        style={styles.container}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={["#2563EB"]}
+          tintColor="#2563EB"
+        />
+      }
+      >
+        <View style={styles.headerRow}>
+          <View style={styles.welcomeContainer}>
+            <Text style={styles.welcomeText}>
+              Halo, {user?.full_name || "Pengguna"} 👋
+            </Text>
+
+            <Text style={styles.welcomeSubText}>
+              Selamat datang kembali di GenerousCare
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.notificationButton}
+            onPress={() => router.push("/notifications")}
+          >
+            <MaterialCommunityIcons name="bell-outline" size={24} color="#64748B" />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.header}>Dashboard</Text>
+
+      <Text style={styles.subtitle}>
+        Ringkasan kondisi dana dan aktivitas sosial terbaru.
+      </Text>
+
+      <View style={styles.heroCard}>
+        <Text style={styles.heroLabel}>Dana Tersisa</Text>
+
+        <Text style={styles.heroAmount}>
+          {formatRupiah(stats?.remainingFunds ?? 0)}
+        </Text>
+      </View>
+
+      <View style={styles.statsRow}>
+        <View style={styles.statsItem}>
+          <StatCard
+            title="Total Donasi"
+            value={formatRupiah(stats?.totalDonations ?? 0)}
+          />
+=======
     <ScreenContainer>
       <ScrollView
         style={styles.container}
@@ -117,6 +175,7 @@ export default function DashboardScreen() {
           <Text style={styles.heroAmount}>
             {formatRupiah(stats?.remainingFunds ?? 0)}
           </Text>
+>>>>>>> origin/main
         </View>
 
         <View style={styles.healthCard}>
@@ -138,9 +197,20 @@ export default function DashboardScreen() {
           </Text>
         </View>
 
+<<<<<<< HEAD
+        <TouchableOpacity 
+          style={[styles.statsItem, styles.trackerButton]}
+          onPress={() => router.push("/tracker")}
+        >
+          <MaterialCommunityIcons name="chart-line" size={24} color="#2563EB" />
+          <Text style={styles.trackerButtonText}>Tracker</Text>
+        </TouchableOpacity>
+      </View>
+=======
         <View style={styles.progressCard}>
           <View style={styles.progressHeader}>
             <Text style={styles.progressLabel}>Tingkat Penyaluran Dana</Text>
+>>>>>>> origin/main
 
             <Text style={styles.progressPercentage}>
               {stats?.distributionRate ?? 0}%
@@ -158,6 +228,11 @@ export default function DashboardScreen() {
             />
           </View>
         </View>
+<<<<<<< HEAD
+      )}
+      </ScrollView>
+    </SafeAreaView>
+=======
 
         <View style={styles.statsRow}>
           <View style={styles.statsItem}>
@@ -358,6 +433,7 @@ export default function DashboardScreen() {
         )}
       </ScrollView>
     </ScreenContainer>
+>>>>>>> origin/main
   );
 }
 
@@ -378,6 +454,53 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
+<<<<<<< HEAD
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+
+  notificationButton: {
+    padding: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+  },
+
+  welcomeContainer: {
+    marginBottom: 20,
+  },
+
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#0F172A",
+  },
+
+  welcomeSubText: {
+    marginTop: 4,
+    fontSize: 14,
+    color: "#64748B",
+  },
+
+  header: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#0F172A",
+    marginBottom: 4,
+  },
+
+  subtitle: {
+    fontSize: 13,
+    color: "#64748B",
+    marginBottom: 20,
+  },
+
+=======
+>>>>>>> origin/main
   heroCard: {
     backgroundColor: "#2563EB",
     borderRadius: 24,
@@ -411,6 +534,22 @@ const styles = StyleSheet.create({
 
   statsItem: {
     flex: 1,
+  },
+
+  trackerButton: {
+    backgroundColor: "#EFF6FF",
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#BFDBFE",
+    flexDirection: "row",
+    gap: 8,
+  },
+
+  trackerButtonText: {
+    color: "#2563EB",
+    fontWeight: "600",
   },
 
   section: {

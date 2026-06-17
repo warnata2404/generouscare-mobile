@@ -72,11 +72,9 @@ export default function TabsLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="tracker"
-        options={{
-          title: "Tracker",
 
+<<<<<<< HEAD
+=======
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="chart-line"
@@ -101,6 +99,7 @@ export default function TabsLayout() {
           ),
         }}
       />
+>>>>>>> origin/main
 
       <Tabs.Screen
         name="notifications"

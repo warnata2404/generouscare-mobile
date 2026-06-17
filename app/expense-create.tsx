@@ -1,4 +1,6 @@
-import { Alert, ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 import { router } from "expo-router";
 
@@ -23,26 +25,27 @@ export default function ExpenseCreateScreen() {
       // Jalankan evaluasi Agent setelah pengeluaran berhasil dibuat
       await agentService.evaluate();
 
-      Alert.alert("Berhasil", "Pengeluaran berhasil ditambahkan.", [
-        {
-          text: "OK",
-          onPress: () => {
-            router.replace("/expenses");
-          },
-        },
-      ]);
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Pengeluaran berhasil ditambahkan.",
+      });
+
+      router.replace("/expenses");
     } catch (error: any) {
       console.log("Expense Create Error:", error);
 
-      Alert.alert(
-        "Gagal",
-        error?.message || "Terjadi kesalahan saat menyimpan pengeluaran.",
-      );
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: error?.message || "Terjadi kesalahan saat menyimpan pengeluaran.",
+      });
     }
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.header}>Tambah Pengeluaran</Text>
 
       <Text style={styles.subtitle}>
@@ -50,7 +53,8 @@ export default function ExpenseCreateScreen() {
       </Text>
 
       <ExpenseForm onSubmit={handleCreateExpense} />
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

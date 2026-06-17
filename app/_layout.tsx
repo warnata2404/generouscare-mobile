@@ -1,5 +1,7 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import Toast from "react-native-toast-message";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -16,6 +18,10 @@ export default function RootLayout() {
         />
 
         <StatusBar style="auto" />
+<<<<<<< HEAD
+        <Toast />
+=======
+>>>>>>> origin/main
       </AuthProvider>
     </SafeAreaProvider>
   );

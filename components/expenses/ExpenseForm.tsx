@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import {
   ActivityIndicator,
-  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -13,6 +12,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 
 import { CATEGORIES } from "@/features/shared/categories";
+import Toast from "react-native-toast-message";
 
 interface ExpenseFormProps {
   initialAmount?: string;
@@ -47,7 +47,11 @@ export default function ExpenseForm({
 
   const handleSubmit = async () => {
     if (!amount || !category || !description) {
-      Alert.alert("Validasi", "Semua field wajib diisi.");
+      Toast.show({
+        type: "error",
+        text1: "Validasi",
+        text2: "Semua field wajib diisi.",
+      });
 
       return;
     }
@@ -61,9 +65,17 @@ export default function ExpenseForm({
       setCategory("");
       setDescription("");
 
-      Alert.alert("Berhasil", "Pengeluaran berhasil ditambahkan.");
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Pengeluaran berhasil ditambahkan.",
+      });
     } catch (error: any) {
-      Alert.alert("Gagal", error.message);
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: error.message,
+      });
     } finally {
       setLoading(false);
     }

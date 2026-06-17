@@ -6,6 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useState } from "react";
 
@@ -61,6 +62,17 @@ export default function TrackerScreen() {
   }
 
   return (
+<<<<<<< HEAD:app/tracker.tsx
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
+      <ScrollView
+        style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+      showsVerticalScrollIndicator={false}
+    >
+      <Text style={styles.header}>Tracker Dana</Text>
+=======
     <ScreenContainer>
       <ScrollView
         style={styles.container}
@@ -74,6 +86,7 @@ export default function TrackerScreen() {
           title="Tracker Dana"
           subtitle="Monitoring transparansi pengelolaan dana donasi."
         />
+>>>>>>> origin/main:app/(tabs)/tracker.tsx
 
         <View style={styles.mainSummaryCard}>
           <Text style={styles.summaryLabel}>Dana Terkumpul</Text>
@@ -125,6 +138,11 @@ export default function TrackerScreen() {
             {formatRupiah(summary.totalDonations)}
           </Text>
         </View>
+<<<<<<< HEAD:app/tracker.tsx
+      ))}
+      </ScrollView>
+    </SafeAreaView>
+=======
 
         <Text style={styles.sectionTitle}>Tracker Per Kategori</Text>
 
@@ -184,6 +202,7 @@ export default function TrackerScreen() {
         ))}
       </ScrollView>
     </ScreenContainer>
+>>>>>>> origin/main:app/(tabs)/tracker.tsx
   );
 }
 

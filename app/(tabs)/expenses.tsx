@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useState } from "react";
 
@@ -51,11 +52,63 @@ export default function ExpensesScreen() {
   }
 
   return (
+<<<<<<< HEAD
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
+      <View style={styles.container}>
+      <Text style={styles.header}>Daftar Pengeluaran</Text>
+
+      <Text style={styles.subtitle}>
+        Seluruh pengeluaran yang tercatat pada sistem.
+      </Text>
+
+      <View style={styles.summaryCard}>
+        <View>
+          <Text style={styles.summaryLabel}>Total Pengeluaran</Text>
+
+          <Text style={styles.summaryAmount}>
+            Rp {totalExpense.toLocaleString("id-ID")}
+          </Text>
+        </View>
+
+        <View style={styles.summaryDivider} />
+
+        <View>
+          <Text style={styles.summaryLabel}>Transaksi</Text>
+
+          <Text style={styles.summaryCount}>{expenses.length}</Text>
+        </View>
+      </View>
+
+      <TouchableOpacity
+        style={styles.createButton}
+        onPress={() => router.push("/expense-create")}
+      >
+        <Text style={styles.createButtonText}>Tambah Pengeluaran</Text>
+      </TouchableOpacity>
+
+      {expenses.length > 0 ? (
+        <FlatList
+          data={expenses}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <ExpenseCard
+              id={item.id}
+              category={item.category}
+              amount={item.amount}
+              description={item.description}
+              createdAt={item.created_at}
+            />
+          )}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          showsVerticalScrollIndicator={false}
+=======
     <ScreenContainer>
       <View style={styles.container}>
         <AppHeader
           title="Pengeluaran"
           subtitle="Kelola dan pantau seluruh data pengeluaran."
+>>>>>>> origin/main
         />
 
         <View style={styles.summaryCard}>
@@ -75,6 +128,11 @@ export default function ExpensesScreen() {
             <Text style={styles.summaryCount}>{expenses.length}</Text>
           </View>
         </View>
+<<<<<<< HEAD
+      )}
+      </View>
+    </SafeAreaView>
+=======
 
         <TouchableOpacity
           style={styles.createButton}
@@ -112,6 +170,7 @@ export default function ExpensesScreen() {
         )}
       </View>
     </ScreenContainer>
+>>>>>>> origin/main
   );
 }
 

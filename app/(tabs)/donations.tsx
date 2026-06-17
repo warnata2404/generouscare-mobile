@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useState } from "react";
 
@@ -51,11 +52,65 @@ export default function DonationsScreen() {
   }
 
   return (
+<<<<<<< HEAD
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
+      <View style={styles.container}>
+      <Text style={styles.header}>Daftar Donasi</Text>
+
+      <Text style={styles.subtitle}>
+        Seluruh donasi yang tercatat pada sistem.
+      </Text>
+
+      <View style={styles.summaryContainer}>
+        <View style={styles.summaryCard}>
+          <Text style={styles.summaryLabel}>Total Donasi</Text>
+
+          <Text style={styles.summaryValue}>
+            {formatRupiah(totalDonations)}
+          </Text>
+        </View>
+
+        <View style={styles.summaryCard}>
+          <Text style={styles.summaryLabel}>Jumlah Transaksi</Text>
+
+          <Text style={styles.summaryValue}>{donations.length}</Text>
+        </View>
+      </View>
+
+      <TouchableOpacity
+        style={styles.createButton}
+        onPress={() => router.push("/donation-create")}
+      >
+        <Text style={styles.createButtonText}>Tambah Donasi</Text>
+      </TouchableOpacity>
+
+      {donations.length > 0 ? (
+        <FlatList
+          data={donations}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <DonationCard
+              id={item.id}
+              amount={item.amount}
+              category={item.category}
+              note={item.note}
+              createdAt={item.created_at}
+              photoUrl={item.photo_url}
+            />
+          )}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: 24,
+          }}
+=======
     <ScreenContainer>
       <View style={styles.container}>
         <AppHeader
           title="Donasi"
           subtitle="Kelola dan pantau seluruh data donasi."
+>>>>>>> origin/main
         />
 
         <View style={styles.summaryContainer}>
@@ -73,6 +128,11 @@ export default function DonationsScreen() {
             <Text style={styles.summaryValue}>{donations.length}</Text>
           </View>
         </View>
+<<<<<<< HEAD
+      )}
+      </View>
+    </SafeAreaView>
+=======
 
         <TouchableOpacity
           style={styles.createButton}
@@ -111,6 +171,7 @@ export default function DonationsScreen() {
         )}
       </View>
     </ScreenContainer>
+>>>>>>> origin/main
   );
 }
 
