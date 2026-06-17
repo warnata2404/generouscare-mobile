@@ -191,7 +191,7 @@ export default function DashboardScreen() {
         <View style={styles.sectionHeader}>
           <Text style={styles.section}>Insight Utama</Text>
 
-          <Text style={styles.seeAll} onPress={() => router.push("/agent")}>
+          <Text style={styles.seeAll} onPress={() => router.push("/agent" as any)}>
             Lihat Semua
           </Text>
         </View>
