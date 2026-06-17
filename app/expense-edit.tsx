@@ -10,9 +10,7 @@ import {
 } from "react-native";
 
 import { router, useLocalSearchParams } from "expo-router";
-
 import ExpenseForm from "@/components/expenses/ExpenseForm";
-
 import { expenseService } from "@/features/expenses/expense.service";
 import { Expense } from "@/features/expenses/types";
 
@@ -22,9 +20,7 @@ export default function ExpenseEditScreen() {
   }>();
 
   const [expense, setExpense] = useState<Expense | null>(null);
-
   const [loading, setLoading] = useState(true);
-
   const loadExpense = useCallback(async () => {
     try {
       const result = await expenseService.getById(id);
@@ -55,8 +51,6 @@ export default function ExpenseEditScreen() {
       category,
       description,
     });
-
-    Alert.alert("Berhasil", "Pengeluaran berhasil diperbarui.");
 
     Alert.alert("Berhasil", "Pengeluaran berhasil diperbarui.");
 

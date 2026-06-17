@@ -1,5 +1,4 @@
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
-
 import { router, useLocalSearchParams } from "expo-router";
 
 export default function ImageViewerScreen() {

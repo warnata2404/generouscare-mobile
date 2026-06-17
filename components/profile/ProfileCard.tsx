@@ -1,7 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-
 import { Profile } from "@/features/profile/types";
-
 import ProfileInfoItem from "./ProfileInfoItem";
 
 interface ProfileCardProps {
@@ -18,11 +16,8 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
       </View>
 
       <ProfileInfoItem label="Nama Lengkap" value={profile.full_name} />
-
       <ProfileInfoItem label="Email" value={profile.email} />
-
       <ProfileInfoItem label="Avatar URL" value={profile.avatar_url || "-"} />
-
       <ProfileInfoItem
         label="Tanggal Bergabung"
         value={
@@ -44,7 +39,6 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOpacity: 0.08,
     shadowRadius: 4,
-
     elevation: 2,
   },
 
@@ -52,14 +46,10 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-
     backgroundColor: "#22C55E",
-
     justifyContent: "center",
     alignItems: "center",
-
     alignSelf: "center",
-
     marginBottom: 24,
   },
 

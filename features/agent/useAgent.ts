@@ -1,15 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-
 import { supabase } from "@/lib/supabase";
-
 import { agentService } from "./agent.service";
 import { AgentInsight } from "./types";
 
 export function useAgent() {
   const [insights, setInsights] = useState<AgentInsight[]>([]);
-
   const [loading, setLoading] = useState(true);
-
   const loadInsights = useCallback(async () => {
     try {
       const result = await agentService.evaluate();

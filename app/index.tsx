@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
-
 import { router } from "expo-router";
-
 import { useAuth } from "@/hooks/useAuth";
 
 export default function IndexScreen() {

@@ -8,13 +8,9 @@ import {
 } from "react-native";
 
 import { useCallback, useEffect, useState } from "react";
-
 import { router, useLocalSearchParams } from "expo-router";
-
 import DonationForm from "@/components/donations/DonationForm";
-
 import { donationService } from "@/features/donations/donation.service";
-
 import { Donation } from "@/features/donations/types";
 
 export default function DonationEditScreen() {

@@ -9,22 +9,15 @@ import {
 } from "react-native";
 
 import { useCallback, useEffect, useState } from "react";
-
 import { router, useLocalSearchParams } from "expo-router";
-
 import DonationDetailCard from "@/components/donations/DonationDetailCard";
-
 import { donationService } from "@/features/donations/donation.service";
-
 import { Donation } from "@/features/donations/types";
 
 export default function DonationDetailScreen() {
   const { id } = useLocalSearchParams();
-
   const [donation, setDonation] = useState<Donation | null>(null);
-
   const [loading, setLoading] = useState(true);
-
   const loadData = useCallback(async () => {
     try {
       const result = await donationService.getById(String(id));

@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import {
   ActivityIndicator,
   Alert,
@@ -13,28 +12,20 @@ import {
 
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
-
 import { DONATION_CATEGORIES } from "@/features/donations/constants";
 
 interface DonationFormInitialValues {
   amount?: number;
-
   category?: string;
-
   note?: string;
-
   latitude?: number;
-
   longitude?: number;
-
   imageUri?: string;
 }
 
 interface DonationFormProps {
   initialValues?: DonationFormInitialValues;
-
   submitLabel?: string;
-
   successMessage?: string;
 
   onSubmit: (
@@ -54,27 +45,13 @@ export default function DonationForm({
   successMessage = "Donasi berhasil disimpan.",
 }: DonationFormProps) {
   const [amount, setAmount] = useState(initialValues?.amount?.toString() ?? "");
-
   const [category, setCategory] = useState(initialValues?.category ?? "");
-
   const [showCategories, setShowCategories] = useState(false);
-
   const [note, setNote] = useState(initialValues?.note ?? "");
-
-  const [latitude, setLatitude] = useState<number | undefined>(
-    initialValues?.latitude,
-  );
-
-  const [longitude, setLongitude] = useState<number | undefined>(
-    initialValues?.longitude,
-  );
-
-  const [imageUri, setImageUri] = useState<string | undefined>(
-    initialValues?.imageUri,
-  );
-
+  const [latitude, setLatitude] = useState<number | undefined>(initialValues?.latitude,);
+  const [longitude, setLongitude] = useState<number | undefined>(initialValues?.longitude,);
+  const [imageUri, setImageUri] = useState<string | undefined>(initialValues?.imageUri,);
   const [loading, setLoading] = useState(false);
-
   const handleGetLocation = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -90,7 +67,6 @@ export default function DonationForm({
       });
 
       setLatitude(location.coords.latitude);
-
       setLongitude(location.coords.longitude);
 
       Alert.alert("Berhasil", "Lokasi berhasil diambil.");
@@ -126,24 +102,17 @@ export default function DonationForm({
 
   const resetForm = () => {
     setAmount("");
-
     setCategory("");
-
     setShowCategories(false);
-
     setNote("");
-
     setLatitude(undefined);
-
     setLongitude(undefined);
-
     setImageUri(undefined);
   };
 
   const handleSubmit = async () => {
     if (!amount || !category || !note) {
       Alert.alert("Validasi", "Semua field wajib diisi.");
-
       return;
     }
 

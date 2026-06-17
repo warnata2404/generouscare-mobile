@@ -1,9 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-
 import { supabase } from "@/lib/supabase";
-
 import { authService } from "@/services/auth.service";
-
 import { AuthContextType, UserProfile } from "@/types/auth";
 
 interface AuthProviderProps {
@@ -16,7 +13,6 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<UserProfile | null>(null);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -11,18 +11,12 @@ import {
 } from "react-native";
 
 import { router } from "expo-router";
-
 import { useAuth } from "@/hooks/useAuth";
-
 export default function LoginScreen() {
   const { login } = useAuth();
-
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
-
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Validasi", "Email dan Password wajib diisi.");

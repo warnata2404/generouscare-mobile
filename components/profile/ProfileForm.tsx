@@ -23,23 +23,17 @@ export default function ProfileForm({
   onSubmit,
 }: ProfileFormProps) {
   const [fullName, setFullName] = useState(initialFullName);
-
   const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl || "");
-
   const [loading, setLoading] = useState(false);
-
   const handleSubmit = async () => {
     if (!fullName.trim()) {
       Alert.alert("Validasi", "Nama lengkap wajib diisi.");
-
       return;
     }
 
     try {
       setLoading(true);
-
       await onSubmit(fullName.trim(), avatarUrl.trim());
-
       Alert.alert("Berhasil", "Profil berhasil diperbarui.");
     } catch (error: any) {
       Alert.alert("Gagal", error?.message || "Terjadi kesalahan.");
@@ -97,32 +91,23 @@ const styles = StyleSheet.create({
 
   input: {
     backgroundColor: "#FFFFFF",
-
     borderWidth: 1,
     borderColor: "#E2E8F0",
-
     borderRadius: 16,
-
     padding: 14,
-
     marginBottom: 16,
   },
 
   button: {
     backgroundColor: "#2563EB",
-
     padding: 16,
-
     borderRadius: 16,
-
     alignItems: "center",
   },
 
   buttonText: {
     color: "#FFFFFF",
-
     fontWeight: "700",
-
     fontSize: 16,
   },
 });

@@ -1,13 +1,8 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 import { router } from "expo-router";
-
 import MapView, { Marker } from "react-native-maps";
-
 import { Donation } from "@/features/donations/types";
-
 import { formatRupiah } from "@/lib/currency";
 
 interface Props {
@@ -51,9 +46,7 @@ export default function DonationDetailCard({ donation }: Props) {
       </View>
 
       <Text style={styles.amount}>{formatRupiah(donation.amount)}</Text>
-
       <InfoItem label="Kategori" value={donation.category} />
-
       <InfoItem label="Catatan" value={donation.note || "-"} />
 
       {donation.latitude && donation.longitude ? (
@@ -111,79 +104,52 @@ function InfoItem({ label, value }: { label: string; value: string }) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
-
     borderRadius: 24,
-
     padding: 20,
-
     shadowColor: "#000",
-
     shadowOpacity: 0.06,
-
     shadowRadius: 10,
-
     elevation: 4,
   },
 
   image: {
     width: "100%",
-
     height: 240,
-
     borderRadius: 18,
-
     backgroundColor: "#F1F5F9",
   },
 
   previewHint: {
     textAlign: "center",
-
     color: "#2563EB",
-
     fontSize: 12,
-
     fontWeight: "600",
-
     marginTop: 8,
-
     marginBottom: 20,
   },
 
   badge: {
     flexDirection: "row",
-
     alignItems: "center",
-
     alignSelf: "flex-start",
-
     backgroundColor: "#DCFCE7",
-
     borderRadius: 999,
-
     paddingHorizontal: 12,
-
     paddingVertical: 6,
-
     marginBottom: 12,
-
     gap: 6,
   },
 
   badgeText: {
     color: "#15803D",
-
     fontWeight: "700",
-
     fontSize: 12,
   },
 
   amount: {
     fontSize: 30,
-
     fontWeight: "700",
-
     color: "#16A34A",
-
     marginBottom: 24,
   },
 
@@ -193,15 +159,12 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 12,
-
     color: "#64748B",
-
     marginBottom: 4,
   },
 
   value: {
     fontSize: 16,
-
     color: "#0F172A",
   },
 
@@ -211,19 +174,14 @@ const styles = StyleSheet.create({
 
   mapTitle: {
     fontSize: 16,
-
     fontWeight: "700",
-
     color: "#0F172A",
-
     marginBottom: 12,
   },
 
   map: {
     width: "100%",
-
     height: 220,
-
     borderRadius: 18,
   },
 });

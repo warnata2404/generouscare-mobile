@@ -1,9 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
 import { router } from "expo-router";
-
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 import { formatRupiah } from "@/lib/currency";
 
 interface ExpenseCardProps {
@@ -64,89 +61,63 @@ export default function ExpenseCard({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
-
     borderRadius: 20,
-
     padding: 18,
-
     marginBottom: 14,
-
     shadowColor: "#000",
-
     shadowOpacity: 0.08,
-
     shadowRadius: 8,
-
     elevation: 3,
   },
 
   header: {
     flexDirection: "row",
-
     alignItems: "center",
-
     marginBottom: 12,
   },
 
   iconContainer: {
     width: 42,
-
     height: 42,
-
     borderRadius: 21,
-
     backgroundColor: "#DC2626",
-
     justifyContent: "center",
-
     alignItems: "center",
   },
 
   headerContent: {
     flex: 1,
-
     marginLeft: 12,
   },
 
   category: {
     fontSize: 16,
-
     fontWeight: "700",
-
     color: "#0F172A",
   },
 
   date: {
     marginTop: 2,
-
     fontSize: 12,
-
     color: "#94A3B8",
   },
 
   description: {
     color: "#64748B",
-
     marginBottom: 12,
-
     lineHeight: 20,
   },
 
   amount: {
     fontSize: 24,
-
     fontWeight: "700",
-
     color: "#DC2626",
   },
 
   detailHint: {
     marginTop: 12,
-
     color: "#2563EB",
-
     fontWeight: "600",
-
     fontSize: 13,
   },
 });

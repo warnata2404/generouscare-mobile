@@ -1,9 +1,6 @@
 import { Alert, ScrollView, StyleSheet, Text } from "react-native";
-
 import { router } from "expo-router";
-
 import DonationForm from "@/components/donations/DonationForm";
-
 import { donationService } from "@/features/donations/donation.service";
 
 export default function DonationCreateScreen() {
@@ -37,7 +34,6 @@ export default function DonationCreateScreen() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.header}>Tambah Donasi</Text>
-
       <Text style={styles.subtitle}>Tambahkan data donasi baru.</Text>
 
       <DonationForm

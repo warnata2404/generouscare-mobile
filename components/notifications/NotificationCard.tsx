@@ -128,19 +128,12 @@ export default function NotificationCard({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
-
     borderRadius: 20,
-
     padding: 16,
-
     marginBottom: 12,
-
     shadowColor: "#000",
-
     shadowOpacity: 0.05,
-
     shadowRadius: 8,
-
     elevation: 3,
   },
 
@@ -150,99 +143,74 @@ const styles = StyleSheet.create({
 
   unreadCard: {
     borderLeftWidth: 4,
-
     borderLeftColor: "#2563EB",
   },
 
   header: {
     flexDirection: "row",
-
     justifyContent: "space-between",
-
     alignItems: "flex-start",
-
     marginBottom: 12,
   },
 
   badgeContainer: {
     flexDirection: "row",
-
     flexWrap: "wrap",
-
     gap: 6,
   },
 
   categoryBadge: {
     paddingHorizontal: 10,
-
     paddingVertical: 5,
-
     borderRadius: 999,
   },
 
   typeBadge: {
     paddingHorizontal: 10,
-
     paddingVertical: 5,
-
     borderRadius: 999,
   },
 
   badgeText: {
     color: "#FFFFFF",
-
     fontSize: 10,
-
     fontWeight: "700",
   },
 
   date: {
     fontSize: 12,
-
     color: "#94A3B8",
   },
 
   title: {
     fontSize: 16,
-
     fontWeight: "700",
-
     color: "#0F172A",
-
     marginBottom: 6,
   },
 
   message: {
     color: "#64748B",
-
     lineHeight: 22,
   },
 
   unreadContainer: {
     flexDirection: "row",
-
     alignItems: "center",
-
     marginTop: 12,
   },
 
   unreadDot: {
     width: 8,
-
     height: 8,
-
     borderRadius: 4,
-
     backgroundColor: "#2563EB",
-
     marginRight: 6,
   },
 
   unreadText: {
     fontSize: 12,
-
     color: "#2563EB",
-
     fontWeight: "600",
   },
 });

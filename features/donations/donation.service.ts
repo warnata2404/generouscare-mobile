@@ -1,7 +1,5 @@
 import { supabase } from "@/lib/supabase";
-
 import { createNotification } from "@/features/notifications/notification-helper";
-
 import {
   CreateDonationPayload,
   Donation,
@@ -42,21 +40,15 @@ export const donationService = {
   async uploadDonationPhoto(imageUri: string): Promise<string> {
     try {
       console.log("UPLOAD PHOTO START");
-
       console.log("IMAGE URI:", imageUri);
-
       const response = await fetch(imageUri);
-
       const arrayBuffer = await response.arrayBuffer();
-
       console.log("ARRAY BUFFER SIZE:", arrayBuffer.byteLength);
-
       const fileName = `${Date.now()}-${Math.random()
         .toString(36)
         .substring(2)}.jpg`;
 
       console.log("UPLOAD FILE NAME:", fileName);
-
       const { error } = await supabase.storage
         .from("donations")
         .upload(fileName, arrayBuffer, {
@@ -87,7 +79,6 @@ export const donationService = {
   async deletePhoto(photoUrl: string) {
     try {
       const url = new URL(photoUrl);
-
       const fileName = url.pathname.split("/").pop();
 
       if (!fileName) {

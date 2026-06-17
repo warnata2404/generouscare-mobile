@@ -1,9 +1,6 @@
 import { Alert, ScrollView, StyleSheet, Text } from "react-native";
-
 import { router } from "expo-router";
-
 import ExpenseForm from "@/components/expenses/ExpenseForm";
-
 import { agentService } from "@/features/agent/agent.service";
 import { expenseService } from "@/features/expenses/expense.service";
 
@@ -20,7 +17,6 @@ export default function ExpenseCreateScreen() {
         description,
       });
 
-      // Jalankan evaluasi Agent setelah pengeluaran berhasil dibuat
       await agentService.evaluate();
 
       Alert.alert("Berhasil", "Pengeluaran berhasil ditambahkan.", [
@@ -44,11 +40,7 @@ export default function ExpenseCreateScreen() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.header}>Tambah Pengeluaran</Text>
-
-      <Text style={styles.subtitle}>
-        Catat penggunaan dana bantuan dan operasional.
-      </Text>
-
+      <Text style={styles.subtitle}>Catat penggunaan dana bantuan dan operasional.</Text>
       <ExpenseForm onSubmit={handleCreateExpense} />
     </ScrollView>
   );

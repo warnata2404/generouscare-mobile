@@ -114,45 +114,31 @@ export default function ExpenseForm({
 const styles = StyleSheet.create({
   input: {
     backgroundColor: "#FFFFFF",
-
     borderWidth: 1,
-
     borderColor: "#E2E8F0",
-
     borderRadius: 16,
-
     padding: 16,
-
     marginBottom: 12,
   },
 
   pickerContainer: {
     backgroundColor: "#FFFFFF",
-
     borderWidth: 1,
-
     borderColor: "#E2E8F0",
-
     borderRadius: 16,
-
     marginBottom: 12,
-
     overflow: "hidden",
   },
 
   button: {
     backgroundColor: "#DC2626",
-
     padding: 16,
-
     borderRadius: 16,
-
     alignItems: "center",
   },
 
   buttonText: {
     color: "#FFFFFF",
-
     fontWeight: "700",
   },
 });

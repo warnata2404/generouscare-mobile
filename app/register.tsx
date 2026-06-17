@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import {
   ActivityIndicator,
   Alert,
@@ -11,20 +10,14 @@ import {
 } from "react-native";
 
 import { router } from "expo-router";
-
 import { useAuth } from "@/hooks/useAuth";
 
 export default function RegisterScreen() {
   const { register } = useAuth();
-
   const [fullName, setFullName] = useState("");
-
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
-
   const handleRegister = async () => {
     if (!fullName || !email || !password) {
       Alert.alert("Validasi", "Semua field wajib diisi.");

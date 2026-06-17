@@ -8,23 +8,16 @@ import {
   View,
 } from "react-native";
 
-import { useCallback, useState } from "react";
-
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-
 import ExpenseDetailCard from "@/components/expenses/ExpenseDetailCard";
-
 import { expenseService } from "@/features/expenses/expense.service";
-
 import { Expense } from "@/features/expenses/types";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useState } from "react";
 
 export default function ExpenseDetailScreen() {
   const { id } = useLocalSearchParams();
-
   const [expense, setExpense] = useState<Expense | null>(null);
-
   const [loading, setLoading] = useState(true);
-
   const loadData = useCallback(async () => {
     try {
       const result = await expenseService.getById(String(id));
@@ -72,7 +65,6 @@ export default function ExpenseDetailScreen() {
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
-
       loadData();
     }, [loadData]),
   );
@@ -96,9 +88,7 @@ export default function ExpenseDetailScreen() {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Detail Pengeluaran</Text>
-
       <ExpenseDetailCard expense={expense} />
-
       <TouchableOpacity
         style={styles.editButton}
         onPress={() =>
@@ -142,31 +132,22 @@ const styles = StyleSheet.create({
 
   editButton: {
     marginTop: 20,
-
     backgroundColor: "#2563EB",
-
     padding: 16,
-
     borderRadius: 16,
-
     alignItems: "center",
   },
 
   deleteButton: {
     marginTop: 12,
-
     backgroundColor: "#DC2626",
-
     padding: 16,
-
     borderRadius: 16,
-
     alignItems: "center",
   },
 
   buttonText: {
     color: "#FFFFFF",
-
     fontWeight: "700",
   },
 });
