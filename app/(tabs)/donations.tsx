@@ -12,6 +12,7 @@ import { useState } from "react";
 import { router } from "expo-router";
 
 import AppHeader from "@/components/common/AppHeader";
+import ScreenContainer from "@/components/common/ScreenContainer";
 
 import DonationCard from "@/components/donations/DonationCard";
 
@@ -41,71 +42,75 @@ export default function DonationsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
+      <ScreenContainer>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      </ScreenContainer>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <AppHeader
-        title="Donasi"
-        subtitle="Kelola dan pantau seluruh data donasi."
-      />
-
-      <View style={styles.summaryContainer}>
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Total Donasi</Text>
-
-          <Text style={styles.summaryValue}>
-            {formatRupiah(totalDonations)}
-          </Text>
-        </View>
-
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Jumlah Transaksi</Text>
-
-          <Text style={styles.summaryValue}>{donations.length}</Text>
-        </View>
-      </View>
-
-      <TouchableOpacity
-        style={styles.createButton}
-        onPress={() => router.push("/donation-create")}
-      >
-        <Text style={styles.createButtonText}>Tambah Donasi</Text>
-      </TouchableOpacity>
-
-      {donations.length > 0 ? (
-        <FlatList
-          data={donations}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <DonationCard
-              id={item.id}
-              amount={item.amount}
-              category={item.category}
-              note={item.note}
-              createdAt={item.created_at}
-              photoUrl={item.photo_url}
-            />
-          )}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContainer}
+    <ScreenContainer>
+      <View style={styles.container}>
+        <AppHeader
+          title="Donasi"
+          subtitle="Kelola dan pantau seluruh data donasi."
         />
-      ) : (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyTitle}>Belum Ada Donasi</Text>
 
-          <Text style={styles.emptyText}>
-            Tambahkan data donasi pertama Anda.
-          </Text>
+        <View style={styles.summaryContainer}>
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Total Donasi</Text>
+
+            <Text style={styles.summaryValue}>
+              {formatRupiah(totalDonations)}
+            </Text>
+          </View>
+
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Jumlah Transaksi</Text>
+
+            <Text style={styles.summaryValue}>{donations.length}</Text>
+          </View>
         </View>
-      )}
-    </View>
+
+        <TouchableOpacity
+          style={styles.createButton}
+          onPress={() => router.push("/donation-create")}
+        >
+          <Text style={styles.createButtonText}>Tambah Donasi</Text>
+        </TouchableOpacity>
+
+        {donations.length > 0 ? (
+          <FlatList
+            data={donations}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <DonationCard
+                id={item.id}
+                amount={item.amount}
+                category={item.category}
+                note={item.note}
+                createdAt={item.created_at}
+                photoUrl={item.photo_url}
+              />
+            )}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContainer}
+          />
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyTitle}>Belum Ada Donasi</Text>
+
+            <Text style={styles.emptyText}>
+              Tambahkan data donasi pertama Anda.
+            </Text>
+          </View>
+        )}
+      </View>
+    </ScreenContainer>
   );
 }
 
@@ -113,7 +118,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
-    padding: 16,
+    paddingHorizontal: 16,
   },
 
   center: {
@@ -183,7 +188,7 @@ const styles = StyleSheet.create({
   },
 
   listContainer: {
-    paddingBottom: 24,
+    paddingBottom: 32,
   },
 
   emptyContainer: {

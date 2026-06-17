@@ -13,6 +13,7 @@ import {
 import { LineChart } from "react-native-chart-kit";
 
 import AppHeader from "@/components/common/AppHeader";
+import ScreenContainer from "@/components/common/ScreenContainer";
 
 import ActivityCard from "@/components/dashboard/ActivityCard";
 import AgentCard from "@/components/dashboard/AgentCard";
@@ -51,174 +52,179 @@ export default function DashboardScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
+      <ScreenContainer>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      </ScreenContainer>
     );
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          colors={["#2563EB"]}
-          tintColor="#2563EB"
-        />
-      }
-    >
-      <AppHeader
-        title="Dashboard"
-        subtitle="Ringkasan kondisi dana dan aktivitas sosial terbaru."
-      />
-
-      <View style={styles.heroCard}>
-        <Text style={styles.heroLabel}>Dana Tersisa</Text>
-
-        <Text style={styles.heroAmount}>
-          {formatRupiah(stats?.remainingFunds ?? 0)}
-        </Text>
-      </View>
-
-      <View style={styles.statsRow}>
-        <View style={styles.statsItem}>
-          <StatCard
-            title="Total Donasi"
-            value={formatRupiah(stats?.totalDonations ?? 0)}
+    <ScreenContainer>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#2563EB"]}
+            tintColor="#2563EB"
           />
-        </View>
-
-        <View style={styles.statsItem}>
-          <StatCard
-            title="Total Pengeluaran"
-            value={formatRupiah(stats?.totalExpenses ?? 0)}
-          />
-        </View>
-      </View>
-
-      <View style={styles.statsRow}>
-        <View style={styles.statsItem}>
-          <StatCard
-            title="Dana Tersalurkan"
-            value={`${stats?.distributionRate ?? 0}%`}
-          />
-        </View>
-
-        <View style={styles.statsItem}>
-          <StatCard title="Aktivitas" value={`${activities.length}`} />
-        </View>
-      </View>
-
-      {recommendation && (
-        <AgentCard
-          title={recommendation.title}
-          description={recommendation.description}
+        }
+      >
+        <AppHeader
+          title="Dashboard"
+          subtitle="Ringkasan kondisi dana dan aktivitas sosial terbaru."
         />
-      )}
 
-      <Text style={styles.section}>Insight Utama</Text>
+        <View style={styles.heroCard}>
+          <Text style={styles.heroLabel}>Dana Tersisa</Text>
 
-      {!agentLoading && insights.length > 0 ? (
-        <AgentCard
-          title={insights[0].title}
-          description={insights[0].message}
-        />
-      ) : (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Belum ada insight dari Agent.</Text>
+          <Text style={styles.heroAmount}>
+            {formatRupiah(stats?.remainingFunds ?? 0)}
+          </Text>
         </View>
-      )}
 
-      {chartData && (
-        <>
-          <Text style={styles.section}>Grafik Donasi vs Pengeluaran</Text>
-
-          <View style={styles.chartContainer}>
-            <View style={styles.legendContainer}>
-              <View style={styles.legendItem}>
-                <View
-                  style={[
-                    styles.legendColor,
-                    {
-                      backgroundColor: "#22C55E",
-                    },
-                  ]}
-                />
-
-                <Text style={styles.legendText}>Donasi</Text>
-              </View>
-
-              <View style={styles.legendItem}>
-                <View
-                  style={[
-                    styles.legendColor,
-                    {
-                      backgroundColor: "#DC2626",
-                    },
-                  ]}
-                />
-
-                <Text style={styles.legendText}>Pengeluaran</Text>
-              </View>
-            </View>
-
-            <LineChart
-              data={{
-                labels: chartData.labels,
-                datasets: [
-                  {
-                    data: chartData.donations,
-                    color: (opacity = 1) => `rgba(34,197,94,${opacity})`,
-                    strokeWidth: 3,
-                  },
-                  {
-                    data: chartData.expenses,
-                    color: (opacity = 1) => `rgba(220,38,38,${opacity})`,
-                    strokeWidth: 3,
-                  },
-                ],
-              }}
-              width={chartWidth}
-              height={260}
-              yAxisLabel="Rp "
-              chartConfig={{
-                backgroundGradientFrom: "#FFFFFF",
-                backgroundGradientTo: "#FFFFFF",
-                decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(37,99,235,${opacity})`,
-                labelColor: (opacity = 1) => `rgba(15,23,42,${opacity})`,
-                propsForDots: {
-                  r: "4",
-                },
-              }}
-              bezier
-              style={styles.chart}
+        <View style={styles.statsRow}>
+          <View style={styles.statsItem}>
+            <StatCard
+              title="Total Donasi"
+              value={formatRupiah(stats?.totalDonations ?? 0)}
             />
           </View>
-        </>
-      )}
 
-      <Text style={styles.section}>Aktivitas Terbaru</Text>
-
-      {activities.length > 0 ? (
-        activities
-          .slice(0, 3)
-          .map((activity) => (
-            <ActivityCard
-              key={activity.id}
-              title={activity.title}
-              createdAt={activity.createdAt}
+          <View style={styles.statsItem}>
+            <StatCard
+              title="Total Pengeluaran"
+              value={formatRupiah(stats?.totalExpenses ?? 0)}
             />
-          ))
-      ) : (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Belum ada aktivitas.</Text>
+          </View>
         </View>
-      )}
-    </ScrollView>
+
+        <View style={styles.statsRow}>
+          <View style={styles.statsItem}>
+            <StatCard
+              title="Dana Tersalurkan"
+              value={`${stats?.distributionRate ?? 0}%`}
+            />
+          </View>
+
+          <View style={styles.statsItem}>
+            <StatCard title="Aktivitas" value={`${activities.length}`} />
+          </View>
+        </View>
+
+        {recommendation && (
+          <AgentCard
+            title={recommendation.title}
+            description={recommendation.description}
+          />
+        )}
+
+        <Text style={styles.section}>Insight Utama</Text>
+
+        {!agentLoading && insights.length > 0 ? (
+          <AgentCard
+            title={insights[0].title}
+            description={insights[0].message}
+          />
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Belum ada insight dari Agent.</Text>
+          </View>
+        )}
+
+        {chartData && (
+          <>
+            <Text style={styles.section}>Grafik Donasi vs Pengeluaran</Text>
+
+            <View style={styles.chartContainer}>
+              <View style={styles.legendContainer}>
+                <View style={styles.legendItem}>
+                  <View
+                    style={[
+                      styles.legendColor,
+                      {
+                        backgroundColor: "#22C55E",
+                      },
+                    ]}
+                  />
+
+                  <Text style={styles.legendText}>Donasi</Text>
+                </View>
+
+                <View style={styles.legendItem}>
+                  <View
+                    style={[
+                      styles.legendColor,
+                      {
+                        backgroundColor: "#DC2626",
+                      },
+                    ]}
+                  />
+
+                  <Text style={styles.legendText}>Pengeluaran</Text>
+                </View>
+              </View>
+
+              <LineChart
+                data={{
+                  labels: chartData.labels,
+                  datasets: [
+                    {
+                      data: chartData.donations,
+                      color: (opacity = 1) => `rgba(34,197,94,${opacity})`,
+                      strokeWidth: 3,
+                    },
+                    {
+                      data: chartData.expenses,
+                      color: (opacity = 1) => `rgba(220,38,38,${opacity})`,
+                      strokeWidth: 3,
+                    },
+                  ],
+                }}
+                width={chartWidth}
+                height={260}
+                yAxisLabel="Rp "
+                chartConfig={{
+                  backgroundGradientFrom: "#FFFFFF",
+                  backgroundGradientTo: "#FFFFFF",
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(37,99,235,${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(15,23,42,${opacity})`,
+                  propsForDots: {
+                    r: "4",
+                  },
+                }}
+                bezier
+                style={styles.chart}
+              />
+            </View>
+          </>
+        )}
+
+        <Text style={styles.section}>Aktivitas Terbaru</Text>
+
+        {activities.length > 0 ? (
+          activities
+            .slice(0, 3)
+            .map((activity) => (
+              <ActivityCard
+                key={activity.id}
+                title={activity.title}
+                createdAt={activity.createdAt}
+              />
+            ))
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Belum ada aktivitas.</Text>
+          </View>
+        )}
+      </ScrollView>
+    </ScreenContainer>
   );
 }
 
@@ -226,7 +232,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
-    padding: 16,
+  },
+
+  contentContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 32,
   },
 
   center: {

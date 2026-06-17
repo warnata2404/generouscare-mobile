@@ -9,6 +9,9 @@ import {
 
 import { useState } from "react";
 
+import AppHeader from "@/components/common/AppHeader";
+import ScreenContainer from "@/components/common/ScreenContainer";
+
 import NotificationCard from "@/components/notifications/NotificationCard";
 
 import { useNotifications } from "@/features/notifications/useNotifications";
@@ -45,103 +48,107 @@ export default function NotificationsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
+      <ScreenContainer>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      </ScreenContainer>
     );
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-      }
-    >
-      <Text style={styles.header}>Pusat Notifikasi</Text>
+    <ScreenContainer>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        <AppHeader
+          title="Notifikasi"
+          subtitle="Informasi aktivitas donasi, pengeluaran, dan sistem."
+        />
 
-      <Text style={styles.subtitle}>
-        Informasi aktivitas donasi, pengeluaran, dan sistem.
-      </Text>
+        <View style={styles.summaryContainer}>
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Total</Text>
 
-      <View style={styles.summaryContainer}>
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Total</Text>
+            <Text style={styles.summaryValue}>{totalNotifications}</Text>
+          </View>
 
-          <Text style={styles.summaryValue}>{totalNotifications}</Text>
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Donasi</Text>
+
+            <Text
+              style={[
+                styles.summaryValue,
+                {
+                  color: "#2563EB",
+                },
+              ]}
+            >
+              {donationCount}
+            </Text>
+          </View>
+
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Pengeluaran</Text>
+
+            <Text
+              style={[
+                styles.summaryValue,
+                {
+                  color: "#DC2626",
+                },
+              ]}
+            >
+              {expenseCount}
+            </Text>
+          </View>
         </View>
 
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Donasi</Text>
+        <View style={styles.systemCard}>
+          <Text style={styles.systemLabel}>Notifikasi Sistem</Text>
 
-          <Text
-            style={[
-              styles.summaryValue,
-              {
-                color: "#2563EB",
-              },
-            ]}
-          >
-            {donationCount}
-          </Text>
+          <Text style={styles.systemValue}>{systemCount}</Text>
         </View>
 
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Pengeluaran</Text>
+        <View style={styles.unreadCard}>
+          <Text style={styles.unreadLabel}>Belum Dibaca</Text>
 
-          <Text
-            style={[
-              styles.summaryValue,
-              {
-                color: "#DC2626",
-              },
-            ]}
-          >
-            {expenseCount}
-          </Text>
+          <Text style={styles.unreadValue}>{unreadCount}</Text>
         </View>
-      </View>
 
-      <View style={styles.systemCard}>
-        <Text style={styles.systemLabel}>Notifikasi Sistem</Text>
+        {notifications.length > 0 ? (
+          notifications.map((item) => (
+            <NotificationCard
+              key={item.id}
+              title={item.title}
+              message={item.message}
+              type={item.type}
+              category={item.category}
+              isRead={item.isRead}
+              createdAt={item.createdAt}
+              onPress={() => {
+                if (!item.isRead) {
+                  markAsRead(item.id);
+                }
+              }}
+            />
+          ))
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyTitle}>Belum Ada Notifikasi</Text>
 
-        <Text style={styles.systemValue}>{systemCount}</Text>
-      </View>
-
-      <View style={styles.unreadCard}>
-        <Text style={styles.unreadLabel}>Belum Dibaca</Text>
-
-        <Text style={styles.unreadValue}>{unreadCount}</Text>
-      </View>
-
-      {notifications.length > 0 ? (
-        notifications.map((item) => (
-          <NotificationCard
-            key={item.id}
-            title={item.title}
-            message={item.message}
-            type={item.type}
-            category={item.category}
-            isRead={item.isRead}
-            createdAt={item.createdAt}
-            onPress={() => {
-              if (!item.isRead) {
-                markAsRead(item.id);
-              }
-            }}
-          />
-        ))
-      ) : (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyTitle}>Belum Ada Notifikasi</Text>
-
-          <Text style={styles.emptyText}>
-            Notifikasi dari sistem akan muncul di sini.
-          </Text>
-        </View>
-      )}
-    </ScrollView>
+            <Text style={styles.emptyText}>
+              Notifikasi dari sistem akan muncul di sini.
+            </Text>
+          </View>
+        )}
+      </ScrollView>
+    </ScreenContainer>
   );
 }
 
@@ -149,25 +156,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
-    padding: 16,
+  },
+
+  contentContainer: {
+    paddingTop: 0,
+    paddingHorizontal: 16,
+    paddingBottom: 32,
   },
 
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  header: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#0F172A",
-    marginBottom: 4,
-  },
-
-  subtitle: {
-    color: "#64748B",
-    marginBottom: 20,
   },
 
   summaryContainer: {

@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 
 import AppHeader from "@/components/common/AppHeader";
+import ScreenContainer from "@/components/common/ScreenContainer";
 
 import AgentInsightCard from "@/components/agent/AgentInsightCard";
 
@@ -42,101 +43,106 @@ export default function AgentScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
+      <ScreenContainer>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      </ScreenContainer>
     );
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-      }
-    >
-      <AppHeader
-        title="Agent Insight"
-        subtitle="Analisis otomatis kondisi dana dan distribusi program."
-      />
+    <ScreenContainer>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        <AppHeader
+          title="Agent Insight"
+          subtitle="Analisis otomatis kondisi dana dan distribusi program."
+        />
 
-      <View style={styles.summaryContainer}>
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Total Insight</Text>
+        <View style={styles.summaryContainer}>
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Total Insight</Text>
 
-          <Text style={styles.summaryValue}>{insights.length}</Text>
+            <Text style={styles.summaryValue}>{insights.length}</Text>
+          </View>
+
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Informasi</Text>
+
+            <Text
+              style={[
+                styles.summaryValue,
+                {
+                  color: "#2563EB",
+                },
+              ]}
+            >
+              {infoCount}
+            </Text>
+          </View>
         </View>
 
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Informasi</Text>
+        <View style={styles.summaryContainer}>
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Positif</Text>
 
-          <Text
-            style={[
-              styles.summaryValue,
-              {
-                color: "#2563EB",
-              },
-            ]}
-          >
-            {infoCount}
-          </Text>
+            <Text
+              style={[
+                styles.summaryValue,
+                {
+                  color: "#16A34A",
+                },
+              ]}
+            >
+              {successCount}
+            </Text>
+          </View>
+
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Perhatian</Text>
+
+            <Text
+              style={[
+                styles.summaryValue,
+                {
+                  color: "#EA580C",
+                },
+              ]}
+            >
+              {warningCount}
+            </Text>
+          </View>
         </View>
-      </View>
 
-      <View style={styles.summaryContainer}>
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Positif</Text>
+        <Text style={styles.sectionTitle}>Insight Terbaru</Text>
 
-          <Text
-            style={[
-              styles.summaryValue,
-              {
-                color: "#16A34A",
-              },
-            ]}
-          >
-            {successCount}
-          </Text>
-        </View>
+        {insights.length > 0 ? (
+          insights.map((item, index) => (
+            <AgentInsightCard
+              key={`${item.title}-${index}`}
+              title={item.title}
+              message={item.message}
+              type={item.type}
+            />
+          ))
+        ) : (
+          <View style={styles.emptyCard}>
+            <Text style={styles.emptyTitle}>Tidak Ada Insight</Text>
 
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Perhatian</Text>
-
-          <Text
-            style={[
-              styles.summaryValue,
-              {
-                color: "#EA580C",
-              },
-            ]}
-          >
-            {warningCount}
-          </Text>
-        </View>
-      </View>
-
-      <Text style={styles.sectionTitle}>Insight Terbaru</Text>
-
-      {insights.length > 0 ? (
-        insights.map((item, index) => (
-          <AgentInsightCard
-            key={`${item.title}-${index}`}
-            title={item.title}
-            message={item.message}
-            type={item.type}
-          />
-        ))
-      ) : (
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>Tidak Ada Insight</Text>
-
-          <Text style={styles.emptyText}>
-            Saat ini Agent belum menemukan kondisi yang perlu diperhatikan.
-          </Text>
-        </View>
-      )}
-    </ScrollView>
+            <Text style={styles.emptyText}>
+              Saat ini Agent belum menemukan kondisi yang perlu diperhatikan.
+            </Text>
+          </View>
+        )}
+      </ScrollView>
+    </ScreenContainer>
   );
 }
 
@@ -144,7 +150,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
-    padding: 16,
+  },
+
+  contentContainer: {
+    paddingTop: 0,
+    paddingHorizontal: 16,
+    paddingBottom: 32,
   },
 
   center: {

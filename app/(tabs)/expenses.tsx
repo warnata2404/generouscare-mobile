@@ -12,6 +12,7 @@ import { useState } from "react";
 import { router } from "expo-router";
 
 import AppHeader from "@/components/common/AppHeader";
+import ScreenContainer from "@/components/common/ScreenContainer";
 
 import ExpenseCard from "@/components/expenses/ExpenseCard";
 
@@ -41,70 +42,76 @@ export default function ExpensesScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
+      <ScreenContainer>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      </ScreenContainer>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <AppHeader
-        title="Pengeluaran"
-        subtitle="Kelola dan pantau seluruh data pengeluaran."
-      />
-
-      <View style={styles.summaryCard}>
-        <View>
-          <Text style={styles.summaryLabel}>Total Pengeluaran</Text>
-
-          <Text style={styles.summaryAmount}>{formatRupiah(totalExpense)}</Text>
-        </View>
-
-        <View style={styles.summaryDivider} />
-
-        <View>
-          <Text style={styles.summaryLabel}>Transaksi</Text>
-
-          <Text style={styles.summaryCount}>{expenses.length}</Text>
-        </View>
-      </View>
-
-      <TouchableOpacity
-        style={styles.createButton}
-        onPress={() => router.push("/expense-create")}
-      >
-        <Text style={styles.createButtonText}>Tambah Pengeluaran</Text>
-      </TouchableOpacity>
-
-      {expenses.length > 0 ? (
-        <FlatList
-          data={expenses}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <ExpenseCard
-              id={item.id}
-              category={item.category}
-              amount={item.amount}
-              description={item.description}
-              createdAt={item.created_at}
-            />
-          )}
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContainer}
+    <ScreenContainer>
+      <View style={styles.container}>
+        <AppHeader
+          title="Pengeluaran"
+          subtitle="Kelola dan pantau seluruh data pengeluaran."
         />
-      ) : (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyTitle}>Belum Ada Pengeluaran</Text>
 
-          <Text style={styles.emptyText}>
-            Tambahkan data pengeluaran pertama.
-          </Text>
+        <View style={styles.summaryCard}>
+          <View>
+            <Text style={styles.summaryLabel}>Total Pengeluaran</Text>
+
+            <Text style={styles.summaryAmount}>
+              {formatRupiah(totalExpense)}
+            </Text>
+          </View>
+
+          <View style={styles.summaryDivider} />
+
+          <View>
+            <Text style={styles.summaryLabel}>Transaksi</Text>
+
+            <Text style={styles.summaryCount}>{expenses.length}</Text>
+          </View>
         </View>
-      )}
-    </View>
+
+        <TouchableOpacity
+          style={styles.createButton}
+          onPress={() => router.push("/expense-create")}
+        >
+          <Text style={styles.createButtonText}>Tambah Pengeluaran</Text>
+        </TouchableOpacity>
+
+        {expenses.length > 0 ? (
+          <FlatList
+            data={expenses}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <ExpenseCard
+                id={item.id}
+                category={item.category}
+                amount={item.amount}
+                description={item.description}
+                createdAt={item.created_at}
+              />
+            )}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContainer}
+          />
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyTitle}>Belum Ada Pengeluaran</Text>
+
+            <Text style={styles.emptyText}>
+              Tambahkan data pengeluaran pertama.
+            </Text>
+          </View>
+        )}
+      </View>
+    </ScreenContainer>
   );
 }
 
@@ -112,7 +119,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
-    padding: 16,
+    paddingHorizontal: 16,
   },
 
   center: {
@@ -198,7 +205,7 @@ const styles = StyleSheet.create({
   },
 
   listContainer: {
-    paddingBottom: 24,
+    paddingBottom: 32,
   },
 
   emptyContainer: {

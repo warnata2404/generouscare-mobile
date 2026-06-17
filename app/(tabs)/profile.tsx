@@ -10,6 +10,9 @@ import {
 
 import { router } from "expo-router";
 
+import AppHeader from "@/components/common/AppHeader";
+import ScreenContainer from "@/components/common/ScreenContainer";
+
 import ProfileCard from "@/components/profile/ProfileCard";
 import ProfileForm from "@/components/profile/ProfileForm";
 
@@ -59,38 +62,46 @@ export default function ProfileScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
+      <ScreenContainer>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      </ScreenContainer>
     );
   }
 
   if (!profile) {
     return (
-      <View style={styles.center}>
-        <Text>Profil tidak ditemukan.</Text>
-      </View>
+      <ScreenContainer>
+        <View style={styles.center}>
+          <Text>Profil tidak ditemukan.</Text>
+        </View>
+      </ScreenContainer>
     );
   }
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <Text style={styles.header}>Profil Saya</Text>
+    <ScreenContainer>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <AppHeader title="Profil Saya" subtitle="Kelola informasi akun Anda." />
 
-      <Text style={styles.subtitle}>Kelola informasi akun Anda.</Text>
+        <ProfileCard profile={profile} />
 
-      <ProfileCard profile={profile} />
+        <ProfileForm
+          initialFullName={profile.full_name}
+          initialAvatarUrl={profile.avatar_url}
+          onSubmit={handleUpdateProfile}
+        />
 
-      <ProfileForm
-        initialFullName={profile.full_name}
-        initialAvatarUrl={profile.avatar_url}
-        onSubmit={handleUpdateProfile}
-      />
-
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Logout</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </ScreenContainer>
   );
 }
 
@@ -98,7 +109,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
-    padding: 16,
+  },
+
+  contentContainer: {
+    paddingTop: 0,
+    paddingHorizontal: 16,
+    paddingBottom: 32,
   },
 
   center: {
@@ -107,30 +123,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  header: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#0F172A",
-    marginBottom: 4,
-  },
-
-  subtitle: {
-    color: "#64748B",
-    marginBottom: 20,
-  },
-
   logoutButton: {
     backgroundColor: "#DC2626",
+
     padding: 16,
+
     borderRadius: 16,
+
     alignItems: "center",
+
     marginTop: 20,
-    marginBottom: 30,
+
+    marginBottom: 20,
   },
 
   logoutText: {
     color: "#FFFFFF",
+
     fontWeight: "700",
+
     fontSize: 16,
   },
 });

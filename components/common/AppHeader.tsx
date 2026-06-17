@@ -129,6 +129,8 @@ const styles = StyleSheet.create({
 
     alignItems: "center",
 
+    marginTop: 4,
+
     shadowColor: "#000",
 
     shadowOpacity: 0.05,
