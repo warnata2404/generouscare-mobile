@@ -9,8 +9,8 @@ import {
   View,
 } from "react-native";
 
-import { router } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
+import { router } from "expo-router";
 
 export default function RegisterScreen() {
   const { register } = useAuth();
