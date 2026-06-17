@@ -22,13 +22,13 @@ export default function NotificationCard({
   const getTypeColor = () => {
     switch (type) {
       case "success":
-        return "#16A34A";
+        return "#12c052ff";
 
       case "warning":
         return "#EA580C";
 
       default:
-        return "#2563EB";
+        return "#2564eeff";
     }
   };
 
