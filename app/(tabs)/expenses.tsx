@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useState } from "react";
 
@@ -44,7 +45,8 @@ export default function ExpensesScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
+      <View style={styles.container}>
       <Text style={styles.header}>Daftar Pengeluaran</Text>
 
       <Text style={styles.subtitle}>
@@ -102,7 +104,8 @@ export default function ExpensesScreen() {
           </Text>
         </View>
       )}
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }
 

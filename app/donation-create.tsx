@@ -1,4 +1,6 @@
-import { Alert, ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 import { router } from "expo-router";
 
@@ -27,15 +29,17 @@ export default function DonationCreateScreen() {
 
       router.replace("/donations");
     } catch (error: any) {
-      Alert.alert(
-        "Gagal",
-        error?.message || "Terjadi kesalahan saat menyimpan donasi.",
-      );
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: error?.message || "Terjadi kesalahan saat menyimpan donasi.",
+      });
     }
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.header}>Tambah Donasi</Text>
 
       <Text style={styles.subtitle}>Tambahkan data donasi baru.</Text>
@@ -45,7 +49,8 @@ export default function DonationCreateScreen() {
         successMessage="Donasi berhasil ditambahkan."
         onSubmit={handleCreate}
       />
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

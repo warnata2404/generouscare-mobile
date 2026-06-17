@@ -66,31 +66,7 @@ export default function TabsLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="tracker"
-        options={{
-          title: "Tracker",
 
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="chart-line"
-              color={color}
-              size={size}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="notifications"
-        options={{
-          title: "Notifikasi",
-
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="bell" color={color} size={size} />
-          ),
-        }}
-      />
 
       <Tabs.Screen
         name="profile"

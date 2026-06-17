@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 import { router } from "expo-router";
 
@@ -27,9 +29,17 @@ export default function ProfileScreen() {
 
       await refresh();
 
-      Alert.alert("Berhasil", "Profil berhasil diperbarui.");
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Profil berhasil diperbarui.",
+      });
     } catch (error: any) {
-      Alert.alert("Gagal", error?.message || "Terjadi kesalahan.");
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: error?.message || "Terjadi kesalahan.",
+      });
     }
   };
 
@@ -50,7 +60,11 @@ export default function ProfileScreen() {
 
             router.replace("/login");
           } catch (error: any) {
-            Alert.alert("Gagal", error?.message || "Logout gagal dilakukan.");
+            Toast.show({
+              type: "error",
+              text1: "Gagal",
+              text2: error?.message || "Logout gagal dilakukan.",
+            });
           }
         },
       },
@@ -74,7 +88,8 @@ export default function ProfileScreen() {
   }
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.header}>Profil Saya</Text>
 
       <Text style={styles.subtitle}>Kelola informasi akun Anda.</Text>
@@ -90,7 +105,8 @@ export default function ProfileScreen() {
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

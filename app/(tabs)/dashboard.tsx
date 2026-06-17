@@ -8,7 +8,11 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 import { LineChart } from "react-native-chart-kit";
 
@@ -58,8 +62,9 @@ export default function DashboardScreen() {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F8FAFC" }}>
+      <ScrollView
+        style={styles.container}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
@@ -69,18 +74,27 @@ export default function DashboardScreen() {
           tintColor="#2563EB"
         />
       }
-    >
-      <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeText}>
-          Halo, {user?.full_name || "Pengguna"} 👋
-        </Text>
+      >
+        <View style={styles.headerRow}>
+          <View style={styles.welcomeContainer}>
+            <Text style={styles.welcomeText}>
+              Halo, {user?.full_name || "Pengguna"} 👋
+            </Text>
 
-        <Text style={styles.welcomeSubText}>
-          Selamat datang kembali di GenerousCare
-        </Text>
-      </View>
+            <Text style={styles.welcomeSubText}>
+              Selamat datang kembali di GenerousCare
+            </Text>
+          </View>
 
-      <Text style={styles.header}>Dashboard</Text>
+          <TouchableOpacity
+            style={styles.notificationButton}
+            onPress={() => router.push("/notifications")}
+          >
+            <MaterialCommunityIcons name="bell-outline" size={24} color="#64748B" />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.header}>Dashboard</Text>
 
       <Text style={styles.subtitle}>
         Ringkasan kondisi dana dan aktivitas sosial terbaru.
@@ -118,7 +132,13 @@ export default function DashboardScreen() {
           />
         </View>
 
-        <View style={styles.statsItem} />
+        <TouchableOpacity 
+          style={[styles.statsItem, styles.trackerButton]}
+          onPress={() => router.push("/tracker")}
+        >
+          <MaterialCommunityIcons name="chart-line" size={24} color="#2563EB" />
+          <Text style={styles.trackerButtonText}>Tracker</Text>
+        </TouchableOpacity>
       </View>
 
       {recommendation && (
@@ -202,7 +222,8 @@ export default function DashboardScreen() {
           <Text style={styles.emptyText}>Belum ada aktivitas.</Text>
         </View>
       )}
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -217,6 +238,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+
+  notificationButton: {
+    padding: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
   },
 
   welcomeContainer: {
@@ -281,6 +317,22 @@ const styles = StyleSheet.create({
 
   statsItem: {
     flex: 1,
+  },
+
+  trackerButton: {
+    backgroundColor: "#EFF6FF",
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#BFDBFE",
+    flexDirection: "row",
+    gap: 8,
+  },
+
+  trackerButtonText: {
+    color: "#2563EB",
+    fontWeight: "600",
   },
 
   section: {

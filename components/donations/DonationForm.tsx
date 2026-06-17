@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import {
   ActivityIndicator,
-  Alert,
   Image,
   StyleSheet,
   Text,
@@ -13,6 +12,7 @@ import {
 
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
+import Toast from "react-native-toast-message";
 
 import { DONATION_CATEGORIES } from "@/features/donations/constants";
 
@@ -80,7 +80,11 @@ export default function DonationForm({
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
-        Alert.alert("Izin Ditolak", "Aplikasi memerlukan akses lokasi.");
+        Toast.show({
+          type: "error",
+          text1: "Izin Ditolak",
+          text2: "Aplikasi memerlukan akses lokasi.",
+        });
 
         return;
       }
@@ -93,9 +97,17 @@ export default function DonationForm({
 
       setLongitude(location.coords.longitude);
 
-      Alert.alert("Berhasil", "Lokasi berhasil diambil.");
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Lokasi berhasil diambil.",
+      });
     } catch {
-      Alert.alert("Gagal", "Tidak dapat mengambil lokasi.");
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Tidak dapat mengambil lokasi.",
+      });
     }
   };
 
@@ -105,7 +117,11 @@ export default function DonationForm({
         await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (!permission.granted) {
-        Alert.alert("Izin Ditolak", "Aplikasi memerlukan akses galeri.");
+        Toast.show({
+          type: "error",
+          text1: "Izin Ditolak",
+          text2: "Aplikasi memerlukan akses galeri.",
+        });
 
         return;
       }
@@ -120,7 +136,11 @@ export default function DonationForm({
         setImageUri(result.assets[0].uri);
       }
     } catch {
-      Alert.alert("Gagal", "Tidak dapat memilih gambar.");
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Tidak dapat memilih gambar.",
+      });
     }
   };
 
@@ -142,7 +162,11 @@ export default function DonationForm({
 
   const handleSubmit = async () => {
     if (!amount || !category || !note) {
-      Alert.alert("Validasi", "Semua field wajib diisi.");
+      Toast.show({
+        type: "error",
+        text1: "Validasi",
+        text2: "Semua field wajib diisi.",
+      });
 
       return;
     }
@@ -159,13 +183,21 @@ export default function DonationForm({
         imageUri,
       );
 
-      Alert.alert("Berhasil", successMessage);
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: successMessage,
+      });
 
       if (!initialValues) {
         resetForm();
       }
     } catch (error: any) {
-      Alert.alert("Gagal", error?.message || "Terjadi kesalahan.");
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: error?.message || "Terjadi kesalahan.",
+      });
     } finally {
       setLoading(false);
     }
