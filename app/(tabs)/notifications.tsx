@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
   ActivityIndicator,
   RefreshControl,
@@ -7,8 +9,6 @@ import {
   View,
 } from "react-native";
 
-import { useState } from "react";
-
 import AppHeader from "@/components/common/AppHeader";
 import ScreenContainer from "@/components/common/ScreenContainer";
 
@@ -17,8 +17,14 @@ import NotificationCard from "@/components/notifications/NotificationCard";
 import { useNotifications } from "@/features/notifications/useNotifications";
 
 export default function NotificationsScreen() {
-  const { notifications, loading, refresh, markAsRead, unreadCount } =
-    useNotifications();
+  const {
+    notifications,
+    loading,
+    refresh,
+    markAsRead,
+    markAllAsRead,
+    unreadCount,
+  } = useNotifications();
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -42,9 +48,13 @@ export default function NotificationsScreen() {
     (item) => item.category === "expense",
   ).length;
 
-  const systemCount = notifications.filter(
-    (item) => item.category === "system",
-  ).length;
+  const sortedNotifications = [...notifications].sort((a, b) => {
+    if (a.isRead === b.isRead) {
+      return 0;
+    }
+
+    return a.isRead ? 1 : -1;
+  });
 
   if (loading) {
     return (
@@ -68,7 +78,7 @@ export default function NotificationsScreen() {
       >
         <AppHeader
           title="Notifikasi"
-          subtitle="Informasi aktivitas donasi, pengeluaran, dan sistem."
+          subtitle="Informasi aktivitas donasi, pengeluaran, dan peringatan sistem."
         />
 
         <View style={styles.summaryContainer}>
@@ -79,13 +89,30 @@ export default function NotificationsScreen() {
           </View>
 
           <View style={styles.summaryCard}>
-            <Text style={styles.summaryLabel}>Donasi</Text>
+            <Text style={styles.summaryLabel}>Belum Dibaca</Text>
 
             <Text
               style={[
                 styles.summaryValue,
                 {
                   color: "#2563EB",
+                },
+              ]}
+            >
+              {unreadCount}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.summaryContainer}>
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryLabel}>Donasi</Text>
+
+            <Text
+              style={[
+                styles.summaryValue,
+                {
+                  color: "#16A34A",
                 },
               ]}
             >
@@ -109,20 +136,18 @@ export default function NotificationsScreen() {
           </View>
         </View>
 
-        <View style={styles.systemCard}>
-          <Text style={styles.systemLabel}>Notifikasi Sistem</Text>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Aktivitas Terbaru</Text>
 
-          <Text style={styles.systemValue}>{systemCount}</Text>
+          {unreadCount > 0 && (
+            <Text style={styles.markAll} onPress={markAllAsRead}>
+              Tandai Semua
+            </Text>
+          )}
         </View>
 
-        <View style={styles.unreadCard}>
-          <Text style={styles.unreadLabel}>Belum Dibaca</Text>
-
-          <Text style={styles.unreadValue}>{unreadCount}</Text>
-        </View>
-
-        {notifications.length > 0 ? (
-          notifications.map((item) => (
+        {sortedNotifications.length > 0 ? (
+          sortedNotifications.map((item) => (
             <NotificationCard
               key={item.id}
               title={item.title}
@@ -143,7 +168,7 @@ export default function NotificationsScreen() {
             <Text style={styles.emptyTitle}>Belum Ada Notifikasi</Text>
 
             <Text style={styles.emptyText}>
-              Notifikasi dari sistem akan muncul di sini.
+              Notifikasi dari aktivitas sistem akan muncul di sini.
             </Text>
           </View>
         )}
@@ -173,7 +198,7 @@ const styles = StyleSheet.create({
   summaryContainer: {
     flexDirection: "row",
     gap: 10,
-    marginBottom: 16,
+    marginBottom: 12,
   },
 
   summaryCard: {
@@ -212,74 +237,32 @@ const styles = StyleSheet.create({
     color: "#0F172A",
   },
 
-  systemCard: {
-    backgroundColor: "#FFFFFF",
+  sectionHeader: {
+    flexDirection: "row",
 
-    borderRadius: 18,
+    justifyContent: "space-between",
 
-    padding: 14,
+    alignItems: "center",
+
+    marginTop: 8,
 
     marginBottom: 12,
-
-    alignItems: "center",
-
-    shadowColor: "#000",
-
-    shadowOpacity: 0.05,
-
-    shadowRadius: 8,
-
-    elevation: 2,
   },
 
-  systemLabel: {
-    color: "#64748B",
-
-    marginBottom: 4,
-  },
-
-  systemValue: {
-    fontSize: 22,
+  sectionTitle: {
+    fontSize: 18,
 
     fontWeight: "700",
 
-    color: "#64748B",
+    color: "#0F172A",
   },
 
-  unreadCard: {
-    backgroundColor: "#FFFFFF",
-
-    borderRadius: 18,
-
-    padding: 14,
-
-    marginBottom: 20,
-
-    alignItems: "center",
-
-    shadowColor: "#000",
-
-    shadowOpacity: 0.05,
-
-    shadowRadius: 8,
-
-    elevation: 2,
-  },
-
-  unreadLabel: {
+  markAll: {
     color: "#2563EB",
-
-    marginBottom: 4,
 
     fontWeight: "600",
-  },
 
-  unreadValue: {
-    fontSize: 22,
-
-    fontWeight: "700",
-
-    color: "#2563EB",
+    fontSize: 14,
   },
 
   emptyContainer: {
@@ -290,6 +273,14 @@ const styles = StyleSheet.create({
     padding: 24,
 
     alignItems: "center",
+
+    shadowColor: "#000",
+
+    shadowOpacity: 0.05,
+
+    shadowRadius: 8,
+
+    elevation: 2,
   },
 
   emptyTitle: {

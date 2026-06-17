@@ -4,4 +4,6 @@ export interface AgentInsight {
   message: string;
 
   type: "info" | "success" | "warning";
+
+  createdAt: string;
 }

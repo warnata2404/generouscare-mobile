@@ -112,7 +112,7 @@ export const expenseService = {
     await createNotification(
       "Pengeluaran Dihapus",
       `Data pengeluaran kategori ${expense.category} berhasil dihapus.`,
-      "warning",
+      "info",
       "expense",
     );
   },

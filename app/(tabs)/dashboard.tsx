@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useState } from "react";
 
 import {
@@ -24,14 +25,39 @@ import { useDashboard } from "@/features/dashboard/useDashboard";
 
 import { formatRupiah } from "@/lib/currency";
 
+const getFinancialStatus = (
+  remainingFunds: number,
+  distributionRate: number,
+) => {
+  if (remainingFunds < 1000000) {
+    return {
+      label: "Kritis",
+      color: "#DC2626",
+    };
+  }
+
+  if (distributionRate >= 80) {
+    return {
+      label: "Sangat Baik",
+      color: "#16A34A",
+    };
+  }
+
+  return {
+    label: "Stabil",
+    color: "#2563EB",
+  };
+};
+
 export default function DashboardScreen() {
   const chartWidth = Dimensions.get("window").width - 32;
 
   const {
     stats,
-    recommendation,
     activities,
     chartData,
+    donationCategoryChart,
+    expenseCategoryChart,
     loading,
     refreshDashboard,
   } = useDashboard();
@@ -39,6 +65,11 @@ export default function DashboardScreen() {
   const { insights, loading: agentLoading } = useAgent();
 
   const [refreshing, setRefreshing] = useState(false);
+
+  const financialStatus = getFinancialStatus(
+    stats?.remainingFunds ?? 0,
+    stats?.distributionRate ?? 0,
+  );
 
   const onRefresh = async () => {
     try {
@@ -88,6 +119,46 @@ export default function DashboardScreen() {
           </Text>
         </View>
 
+        <View style={styles.healthCard}>
+          <Text style={styles.healthLabel}>Status Keuangan</Text>
+
+          <Text
+            style={[
+              styles.healthValue,
+              {
+                color: financialStatus.color,
+              },
+            ]}
+          >
+            {financialStatus.label}
+          </Text>
+
+          <Text style={styles.healthDescription}>
+            Rasio penyaluran dana saat ini {stats?.distributionRate ?? 0}%
+          </Text>
+        </View>
+
+        <View style={styles.progressCard}>
+          <View style={styles.progressHeader}>
+            <Text style={styles.progressLabel}>Tingkat Penyaluran Dana</Text>
+
+            <Text style={styles.progressPercentage}>
+              {stats?.distributionRate ?? 0}%
+            </Text>
+          </View>
+
+          <View style={styles.progressBackground}>
+            <View
+              style={[
+                styles.progressFill,
+                {
+                  width: `${Math.min(stats?.distributionRate ?? 0, 100)}%`,
+                },
+              ]}
+            />
+          </View>
+        </View>
+
         <View style={styles.statsRow}>
           <View style={styles.statsItem}>
             <StatCard
@@ -117,23 +188,41 @@ export default function DashboardScreen() {
           </View>
         </View>
 
-        {recommendation && (
-          <AgentCard
-            title={recommendation.title}
-            description={recommendation.description}
-          />
-        )}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.section}>Insight Utama</Text>
 
-        <Text style={styles.section}>Insight Utama</Text>
+          <Text style={styles.seeAll} onPress={() => router.push("/agent")}>
+            Lihat Semua
+          </Text>
+        </View>
 
-        {!agentLoading && insights.length > 0 ? (
-          <AgentCard
-            title={insights[0].title}
-            description={insights[0].message}
-          />
+        {agentLoading ? (
+          <View style={styles.emptyContainer}>
+            <ActivityIndicator size="small" color="#2563EB" />
+
+            <Text
+              style={[
+                styles.emptyText,
+                {
+                  marginTop: 10,
+                },
+              ]}
+            >
+              Memuat insight dari Agent...
+            </Text>
+          </View>
+        ) : insights.length > 0 ? (
+          <>
+            <AgentCard
+              title={insights[0].title}
+              description={insights[0].message}
+            />
+          </>
         ) : (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>Belum ada insight dari Agent.</Text>
+            <Text style={styles.emptyText}>
+              Belum ada insight yang tersedia.
+            </Text>
           </View>
         )}
 
@@ -206,11 +295,55 @@ export default function DashboardScreen() {
           </>
         )}
 
+        {donationCategoryChart && (
+          <>
+            <Text style={styles.section}>Donasi per Kategori</Text>
+
+            <View style={styles.categoryCard}>
+              {donationCategoryChart.labels.map((label, index) => (
+                <View
+                  key={label}
+                  style={[
+                    styles.categoryRow,
+                    index === donationCategoryChart.labels.length - 1 && {
+                      borderBottomWidth: 0,
+                    },
+                  ]}
+                >
+                  <Text style={styles.categoryName}>{label}</Text>
+
+                  <Text style={styles.categoryAmount}>
+                    {formatRupiah(donationCategoryChart.values[index])}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+
+        {expenseCategoryChart && (
+          <>
+            <Text style={styles.section}>Pengeluaran per Kategori</Text>
+
+            <View style={styles.categoryCard}>
+              {expenseCategoryChart.labels.map((label, index) => (
+                <View key={label} style={styles.categoryRow}>
+                  <Text style={styles.categoryName}>{label}</Text>
+
+                  <Text style={styles.categoryAmount}>
+                    {formatRupiah(expenseCategoryChart.values[index])}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+
         <Text style={styles.section}>Aktivitas Terbaru</Text>
 
         {activities.length > 0 ? (
           activities
-            .slice(0, 3)
+            .slice(0, 5)
             .map((activity) => (
               <ActivityCard
                 key={activity.id}
@@ -281,10 +414,10 @@ const styles = StyleSheet.create({
   },
 
   section: {
-    marginTop: 20,
-    marginBottom: 12,
     fontSize: 18,
+
     fontWeight: "700",
+
     color: "#0F172A",
   },
 
@@ -339,5 +472,146 @@ const styles = StyleSheet.create({
 
   emptyText: {
     color: "#64748B",
+  },
+
+  healthCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 18,
+    marginBottom: 16,
+
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+
+    elevation: 3,
+  },
+
+  healthLabel: {
+    fontSize: 13,
+    color: "#64748B",
+  },
+
+  healthValue: {
+    fontSize: 24,
+    fontWeight: "700",
+    marginTop: 6,
+  },
+
+  healthDescription: {
+    marginTop: 6,
+    color: "#64748B",
+  },
+
+  categoryCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 20,
+
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+
+    elevation: 3,
+  },
+
+  categoryRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+
+    paddingVertical: 10,
+
+    borderBottomWidth: 1,
+    borderBottomColor: "#F1F5F9",
+  },
+
+  categoryName: {
+    color: "#0F172A",
+    fontWeight: "600",
+  },
+
+  categoryAmount: {
+    color: "#2563EB",
+    fontWeight: "700",
+  },
+
+  progressCard: {
+    backgroundColor: "#FFFFFF",
+
+    borderRadius: 20,
+
+    padding: 18,
+
+    marginBottom: 16,
+
+    shadowColor: "#000",
+
+    shadowOpacity: 0.05,
+
+    shadowRadius: 8,
+
+    elevation: 3,
+  },
+
+  progressHeader: {
+    flexDirection: "row",
+
+    justifyContent: "space-between",
+
+    alignItems: "center",
+
+    marginBottom: 12,
+  },
+
+  progressLabel: {
+    color: "#64748B",
+
+    fontSize: 13,
+  },
+
+  progressPercentage: {
+    fontSize: 18,
+
+    fontWeight: "700",
+
+    color: "#16A34A",
+  },
+
+  progressBackground: {
+    height: 12,
+
+    backgroundColor: "#E2E8F0",
+
+    borderRadius: 999,
+
+    overflow: "hidden",
+  },
+
+  progressFill: {
+    height: 12,
+
+    backgroundColor: "#16A34A",
+  },
+
+  sectionHeader: {
+    flexDirection: "row",
+
+    justifyContent: "space-between",
+
+    alignItems: "center",
+
+    marginTop: 20,
+
+    marginBottom: 12,
+  },
+
+  seeAll: {
+    color: "#2563EB",
+
+    fontWeight: "600",
+
+    fontSize: 14,
   },
 });

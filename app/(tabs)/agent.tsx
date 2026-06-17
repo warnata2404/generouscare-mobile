@@ -31,6 +31,10 @@ export default function AgentScreen() {
     }
   };
 
+  const sortedInsights = [...insights].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+
   const infoCount = insights.filter((item) => item.type === "info").length;
 
   const successCount = insights.filter(
@@ -40,6 +44,8 @@ export default function AgentScreen() {
   const warningCount = insights.filter(
     (item) => item.type === "warning",
   ).length;
+
+  const latestInsight = sortedInsights.length > 0 ? sortedInsights[0] : null;
 
   if (loading) {
     return (
@@ -65,6 +71,16 @@ export default function AgentScreen() {
           title="Agent Insight"
           subtitle="Analisis otomatis kondisi dana dan distribusi program."
         />
+
+        <View style={styles.lastUpdateCard}>
+          <Text style={styles.lastUpdateLabel}>Update Terakhir Agent</Text>
+
+          <Text style={styles.lastUpdateValue}>
+            {latestInsight
+              ? new Date(latestInsight.createdAt).toLocaleString("id-ID")
+              : "-"}
+          </Text>
+        </View>
 
         <View style={styles.summaryContainer}>
           <View style={styles.summaryCard}>
@@ -123,13 +139,14 @@ export default function AgentScreen() {
 
         <Text style={styles.sectionTitle}>Insight Terbaru</Text>
 
-        {insights.length > 0 ? (
-          insights.map((item, index) => (
+        {sortedInsights.length > 0 ? (
+          sortedInsights.map((item, index) => (
             <AgentInsightCard
               key={`${item.title}-${index}`}
               title={item.title}
               message={item.message}
               type={item.type}
+              createdAt={item.createdAt}
             />
           ))
         ) : (
@@ -162,6 +179,40 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  lastUpdateCard: {
+    backgroundColor: "#FFFFFF",
+
+    borderRadius: 20,
+
+    padding: 16,
+
+    marginBottom: 16,
+
+    shadowColor: "#000",
+
+    shadowOpacity: 0.05,
+
+    shadowRadius: 8,
+
+    elevation: 3,
+  },
+
+  lastUpdateLabel: {
+    color: "#64748B",
+
+    fontSize: 13,
+
+    marginBottom: 4,
+  },
+
+  lastUpdateValue: {
+    color: "#0F172A",
+
+    fontSize: 15,
+
+    fontWeight: "700",
   },
 
   summaryContainer: {
